@@ -132,7 +132,28 @@ class FavoritesPageState extends State<FavoritesPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Text("Favorites"),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {print("Selected team has been added to favorites.");},
+                  child: Text(
+                    "Add to favorites",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+                height: 40
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -149,7 +170,45 @@ class HomePageState extends State<HomePage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Text("Home"),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                SizedBox(
+                    height: 40
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  width: 400,
+                  height: 400,
+                  color: Colors.grey,
+                  child: Text(
+                      "Today's Matches",
+                      style: TextStyle(
+                        fontSize: 25,
+                      )
+                  ),
+                ),
+                SizedBox(
+                    height: 30
+                ),
+                Container(
+                  alignment: Alignment.topCenter,
+                  width: 400,
+                  height: 200,
+                  color: Colors.lightGreen,
+                  child: Text(
+                      "Favorite Teams' Matches",
+                      style: TextStyle(
+                        fontSize: 25,
+                      )
+                  ),
+                )
+              ],
+            ),
+          ]
+        ),
       ),
     );
   }
@@ -166,7 +225,44 @@ class CouponsPageState extends State<CouponsPage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Text("Coupons"),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                    width: 58
+                ),
+                IconButton(
+                  onPressed: () {print("Previous coupon...");},
+                  icon: Icon(Icons.arrow_back_ios_sharp, size: 30),
+                ),
+                SizedBox(
+                  width: 20
+                ),
+                ElevatedButton(
+                  onPressed: () {print("Selected coupon is saved.");},
+                  child: Text(
+                    "Save coupon",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                    width: 20
+                ),
+                IconButton(
+                  onPressed: () {print("Next coupon...");},
+                  icon: Icon(Icons.arrow_forward_ios_sharp, size: 30),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 35
+            ),
+          ],
+        ),
       ),
     );
   }
