@@ -60,7 +60,6 @@ class MainMenuState extends State<MainMenu> {
               const Text(
                 "ScoreStack",
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontSize: 35,
                   fontWeight: FontWeight.w600,
                   color: Colors.white
@@ -183,12 +182,65 @@ class HomePageState extends State<HomePage> {
                   width: 400,
                   height: 400,
                   color: Colors.grey,
-                  child: Text(
-                      "Today's Matches",
-                      style: TextStyle(
-                        fontSize: 25,
-                      )
-                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        color: Colors.black54,
+                        child: Text(
+                          "Today's Matches",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          children:[
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
                 ),
                 SizedBox(
                     height: 30
@@ -198,12 +250,64 @@ class HomePageState extends State<HomePage> {
                   width: 400,
                   height: 200,
                   color: Colors.lightGreen,
-                  child: Text(
-                      "Favorite Teams' Matches",
-                      style: TextStyle(
-                        fontSize: 25,
-                      )
-                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        color: Colors.green,
+                        child: Text("Favorite Team's Matches",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                        ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView(
+                          children:[
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.sports_soccer),
+                              title: Text("Fenerbahçe vs Galatasaray"),
+                              subtitle: Text("21.00"),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
                 )
               ],
             ),
