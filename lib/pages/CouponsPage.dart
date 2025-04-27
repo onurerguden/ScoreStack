@@ -40,6 +40,7 @@ class CouponsPageState extends State<CouponsPage> {
           SizedBox(height: 35),
         ],
       ),
+      backgroundColor: Colors.black54,
     );
   }
 }

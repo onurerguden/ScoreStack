@@ -26,6 +26,7 @@ class FavoritesPageState extends State<FavoritesPage> {
           SizedBox(height: 40),
         ],
       ),
+      backgroundColor: Colors.black54,
     );
   }
 }

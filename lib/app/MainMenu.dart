@@ -27,7 +27,7 @@ class MainMenuState extends State<MainMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedPage],
-      backgroundColor: Colors.grey,
+
 
       //APPBAR CUSTOM
       appBar: CustomAppBar(),
