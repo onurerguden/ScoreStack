@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154623454080",
+    "project_id": "scorestack-eee3d",
+    "storage_bucket": "scorestack-eee3d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154623454080:android:c6023f9909169163f7ef65",
+        "android_client_info": {
+          "package_name": "com.example.scorestack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWiMvBX4iwZBkVgc3WRVg1VLcIJ2VgodE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
