@@ -22,6 +22,9 @@ class Match {
 
 
   factory Match.fromMap(Map<String, dynamic> map) {
+    if (map['matchTime'] == null) {
+      throw Exception('MatchTime is missing');
+    }
     return Match(
       homeTeamRef: map['homeTeam'] as DocumentReference,
       awayTeamRef: map['awayTeam'] as DocumentReference,
