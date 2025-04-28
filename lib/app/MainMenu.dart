@@ -28,7 +28,6 @@ class MainMenuState extends State<MainMenu> {
     return Scaffold(
       body: _pages[_selectedPage],
 
-
       //APPBAR CUSTOM
       appBar: CustomAppBar(),
 

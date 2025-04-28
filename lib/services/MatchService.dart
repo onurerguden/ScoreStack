@@ -9,7 +9,8 @@ class MatchService {
 
   Future<List<Match>> fetchMatches() async {
     try {
-      QuerySnapshot snapshot = await matchesCollection.get();
+      //ORDER THE MATCHES ACCORDİNG TO THE CLOSEST MATCH TİME
+      QuerySnapshot snapshot = await matchesCollection.orderBy("matchTime").get();
       print('Fetched documents: ${snapshot.docs.length}');
 
       List<Match> matches = [];
@@ -46,7 +47,7 @@ class MatchService {
       future: fetchMatches(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CircularProgressIndicator(color: Colors.green,));
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -61,7 +62,7 @@ class MatchService {
                 future: match.homeTeamRef.get(),
                 builder: (context, homeTeamSnapshot) {
                   if (!homeTeamSnapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CircularProgressIndicator(color: Colors.green,));
                   }
                   final homeData = homeTeamSnapshot.data!.data() as Map<String, dynamic>;
                   final homeName = homeData['name'] ?? 'Unknown Home';
@@ -70,7 +71,7 @@ class MatchService {
                     future: match.awayTeamRef.get(),
                     builder: (context, awayTeamSnapshot) {
                       if (!awayTeamSnapshot.hasData) {
-                        return Center(child: CircularProgressIndicator());
+                        return Center(child: CircularProgressIndicator(color: Colors.green,));
                       }
                       final awayData = awayTeamSnapshot.data!.data() as Map<String, dynamic>;
                       final awayName = awayData['name'] ?? 'Unknown Away';
@@ -82,6 +83,7 @@ class MatchService {
                         homeOdds: match.homeOdds,
                         drawOdds: match.drawOdds,
                         awayOdds: match.awayOdds,
+                        league: match.league,
                       );
                     },
                   );

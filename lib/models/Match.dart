@@ -7,6 +7,7 @@ class Match {
   final double homeOdds;
   final double drawOdds;
   final double awayOdds;
+  final String league;
 
   Match({
     required this.homeTeamRef,
@@ -15,6 +16,7 @@ class Match {
     required this.homeOdds,
     required this.drawOdds,
     required this.awayOdds,
+    required this.league
   });
 
 
@@ -32,6 +34,7 @@ class Match {
       homeOdds: (map['homeOdds'] as num).toDouble(),
       drawOdds: (map['drawOdds'] as num).toDouble(),
       awayOdds: (map['awayOdds'] as num).toDouble(),
+      league: map['league'] ?? 'Unknown League',
     );
   }
 }
