@@ -1,0 +1,31 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
+class UpdateCheckerService {
+  static const String _lastUpdateKey = 'lastUpdateTime';
+  static const int _updateThresholdMillis =  8 * 60 * 60 * 1000; // 8 saat
+
+  // Zamanı kaydet
+  static Future<void> saveLastUpdateTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_lastUpdateKey, DateTime.now().millisecondsSinceEpoch);
+  }
+
+  // Güncellemeye ihtiyaç var mı kontrol et
+  static Future<bool> shouldUpdate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastUpdateTime = prefs.getInt(_lastUpdateKey) ?? 0;
+    final currentTime = DateTime.now().millisecondsSinceEpoch;
+
+    final diffInHours = (currentTime - lastUpdateTime) / (1000 * 60 * 60);
+
+    print("[UpdateCheckerService] Last update was $diffInHours hours ago.");
+
+    bool needsUpdate = (currentTime - lastUpdateTime) > _updateThresholdMillis;
+    if (needsUpdate) {
+      print("[UpdateCheckerService] ❗ 8 saat geçti, veri güncellenecek.");
+    } else {
+      print("[UpdateCheckerService] ✅ 8 saat geçmedi, veri güncellenmeyecek.");
+    }
+    return needsUpdate;
+  }
+}
