@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Match {
   final DocumentReference homeTeamRef;
   final DocumentReference awayTeamRef;
+  final String homeTeamName;
+  final String awayTeamName;
   final DateTime matchTime;
   final double homeOdds;
   final double drawOdds;
@@ -12,6 +14,8 @@ class Match {
   Match({
     required this.homeTeamRef,
     required this.awayTeamRef,
+    required this.homeTeamName,
+    required this.awayTeamName,
     required this.matchTime,
     required this.homeOdds,
     required this.drawOdds,
@@ -30,6 +34,8 @@ class Match {
     return Match(
       homeTeamRef: map['homeTeam'] as DocumentReference,
       awayTeamRef: map['awayTeam'] as DocumentReference,
+      homeTeamName: map['homeTeamName'] ?? 'Unknown Home',
+      awayTeamName: map['awayTeamName'] ?? 'Unknown Away',
       matchTime: (map['matchTime'] as Timestamp).toDate(),
       homeOdds: (map['homeOdds'] as num).toDouble(),
       drawOdds: (map['drawOdds'] as num).toDouble(),

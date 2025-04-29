@@ -34,11 +34,10 @@ class HomePageState extends State<HomePage> {
       print("[HomePage]  Yeni güncelleme zamanı kaydedildi.");
     } else {
       print("[HomePage]  API çağrılmadı, local veriler kullanılacak.");
-
     }
 
     setState(() {
-      _isLoading=false;
+      _isLoading = false;
       _matchesFuture = _matchService.fetchMatches();
     });
   }
@@ -56,7 +55,7 @@ class HomePageState extends State<HomePage> {
                       CircularProgressIndicator(color: Colors.green[800]),
                       SizedBox(height: 20),
                       Text(
-                        "Yeni maçlar yükleniyor...",
+                        "New Matches are loading..",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -126,28 +125,7 @@ class HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Expanded(
-                                child: ListView(
-                                  children: [
-                                    MatchTile(
-                                      homeTeam: "Fenerbahçe",
-                                      awayTeam: "Galatasaray",
-                                      time: "19.00",
-                                      homeOdds: 2.05,
-                                      drawOdds: 3.10,
-                                      awayOdds: 2.80,
-                                      league: "Süperlig",
-                                    ),
-                                    MatchTile(
-                                      homeTeam: "Fenerbahçe",
-                                      awayTeam: "Beşiktaş",
-                                      time: "19.00",
-                                      homeOdds: 2.05,
-                                      drawOdds: 3.10,
-                                      awayOdds: 2.80,
-                                      league: "Türkiye Kupası",
-                                    ),
-                                  ],
-                                ),
+                                child: MatchService().buildFavoriteMatchList(),
                               ),
                             ],
                           ),

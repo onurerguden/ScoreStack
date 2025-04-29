@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MatchApiService {
+  int fetchMatchsinXdays = 3;
   static const String _apiKey =
       '64c672feb9msh32fff8f59fc234dp11c6cbjsndd5b38cb5943';
   static const String _host = 'api-football-v1.p.rapidapi.com';
@@ -10,6 +11,47 @@ class MatchApiService {
 
   String _formatDate(DateTime date) {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  Future<List<String>> fetchLast5Matches(int teamId) async {
+    final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2024'); // DEĞİŞTİ
+
+    final response = await http.get(
+      url,
+      headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      List<String> matches = [];
+
+      for (var fixture in data['response']) {
+        // Yalnızca biten maçlar
+        if (fixture['fixture']['status']['short'] != 'FT') continue;
+
+        bool isHome = fixture['teams']['home']['id'] == teamId;
+        int homeGoals = fixture['goals']['home'];
+        int awayGoals = fixture['goals']['away'];
+
+        if (homeGoals == awayGoals) {
+          matches.add('D');
+        } else if ((isHome && homeGoals > awayGoals) || (!isHome && awayGoals > homeGoals)) {
+          matches.add('W');
+        } else {
+          matches.add('L');
+        }
+      }
+
+      // En son 5 maçı al
+      if (matches.length > 5) {
+        matches = matches.sublist(matches.length - 5);
+      }
+
+      return matches;
+    } else {
+      print('Failed to fetch last 5 matches for teamId $teamId');
+      return [];
+    }
   }
 
   Future<void> fetchMatchesForLeagues() async {
@@ -21,6 +63,7 @@ class MatchApiService {
 
     for (var league in leagues) {
       await _fetchMatchesForLeague(league['id'], league['name']);
+      await Future.delayed(Duration(milliseconds: 200)); // Add delay
     }
     await _deletePastMatches();
   }
@@ -29,7 +72,7 @@ class MatchApiService {
   Future<void> _fetchMatchesForLeague(int leagueId, String leagueName) async {
     try {
       final now = DateTime.now();
-      final toDate = now.add(Duration(days: 2));
+      final toDate = now.add(Duration(days: fetchMatchsinXdays));
 
       final url = Uri.parse(
           '$_baseUrl/fixtures?league=$leagueId&season=2024&from=${_formatDate(now)}&to=${_formatDate(toDate)}'
@@ -46,14 +89,21 @@ class MatchApiService {
 
         for (var match in data['response']) {
           String homeName = match['teams']['home']['name'];
+          String homeLogo = match['teams']['home']['logo'];
           String awayName = match['teams']['away']['name'];
+          String awayLogo = match['teams']['away']['logo'];
+          int homeTeamId = match['teams']['home']['id'];
+          int awayTeamId = match['teams']['away']['id'];
           String date = match['fixture']['date'];
+
+          String country = match['league']['country'];
+          String leagueNameFromApi = match['league']['name'];
 
           int fixtureId = match['fixture']['id'];
           Map<String, double> odds = await fetchOdds(fixtureId);
 
-          DocumentReference homeTeamRef = await _getOrCreateTeam(homeName);
-          DocumentReference awayTeamRef = await _getOrCreateTeam(awayName);
+          DocumentReference homeTeamRef = await _getOrCreateTeam(homeName, homeLogo, country, leagueNameFromApi, homeTeamId);
+          DocumentReference awayTeamRef = await _getOrCreateTeam(awayName, awayLogo, country, leagueNameFromApi, awayTeamId);
 
           final existingMatch =
               await FirebaseFirestore.instance
@@ -75,12 +125,14 @@ class MatchApiService {
           await FirebaseFirestore.instance.collection('matches').add({
             'homeTeam': homeTeamRef,
             'awayTeam': awayTeamRef,
+            'homeTeamName': homeName,
+            'awayTeamName': awayName,
             'matchTime': Timestamp.fromDate(DateTime.parse(date)),
             'homeOdds': odds['home'] ?? 0.0,
             'drawOdds': odds['draw'] ?? 0.0,
             'awayOdds': odds['away'] ?? 0.0,
             'league': leagueName,
-            'fixtureId' : fixtureId,
+            'fixtureId': fixtureId,
           });
 
           print('Saved match: $homeName vs $awayName');
@@ -119,15 +171,23 @@ class MatchApiService {
     return {'home': 0.0, 'draw': 0.0, 'away': 0.0};
   }
 
-  Future<DocumentReference> _getOrCreateTeam(String teamName) async {
+  Future<DocumentReference> _getOrCreateTeam(String teamName, String logoUrl, String country, String league, int teamId) async {
     final teamCollection = FirebaseFirestore.instance.collection('team');
-    final querySnapshot =
-        await teamCollection.where('name', isEqualTo: teamName).get();
+    final querySnapshot = await teamCollection.where('name', isEqualTo: teamName).get();
 
     if (querySnapshot.docs.isNotEmpty) {
       return querySnapshot.docs.first.reference;
     } else {
-      final newTeamDoc = await teamCollection.add({'name': teamName});
+      final last5Matches = await fetchLast5Matches(teamId);
+
+      final newTeamDoc = await teamCollection.add({
+        'name': teamName,
+        'logoUrl': logoUrl,
+        'country': country,
+        'league': league,
+        'last5Matches': last5Matches,
+      });
+      print('Created new team: $teamName');
       return newTeamDoc;
     }
   }

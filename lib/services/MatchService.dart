@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Match.dart';
 import '../widgets/MatchTile.dart';
+import '../services/FavoriteService.dart';
 
 class MatchService {
   final CollectionReference matchesCollection =
@@ -42,12 +43,13 @@ class MatchService {
 
 
 
+
   Widget buildMatchList() {
     return FutureBuilder<List<Match>>(
       future: fetchMatches(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: Colors.green,));
+          return Center(child: CircularProgressIndicator(color: Colors.green));
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -58,34 +60,65 @@ class MatchService {
             itemCount: matches.length,
             itemBuilder: (context, index) {
               final match = matches[index];
-              return FutureBuilder<DocumentSnapshot>(
-                future: match.homeTeamRef.get(),
-                builder: (context, homeTeamSnapshot) {
-                  if (!homeTeamSnapshot.hasData) {
-                    return Center(child: CircularProgressIndicator(color: Colors.green,));
-                  }
-                  final homeData = homeTeamSnapshot.data!.data() as Map<String, dynamic>;
-                  final homeName = homeData['name'] ?? 'Unknown Home';
+              return MatchTile(
+                homeTeam: match.homeTeamName,
+                awayTeam: match.awayTeamName,
+                time: match.matchTimeFormatted,
+                homeOdds: match.homeOdds,
+                drawOdds: match.drawOdds,
+                awayOdds: match.awayOdds,
+                league: match.league,
+              );
+            },
+          );
+        }
+      },
+    );
+  }
 
-                  return FutureBuilder<DocumentSnapshot>(
-                    future: match.awayTeamRef.get(),
-                    builder: (context, awayTeamSnapshot) {
-                      if (!awayTeamSnapshot.hasData) {
-                        return Center(child: CircularProgressIndicator(color: Colors.green,));
-                      }
-                      final awayData = awayTeamSnapshot.data!.data() as Map<String, dynamic>;
-                      final awayName = awayData['name'] ?? 'Unknown Away';
+  Widget buildFavoriteMatchList() {
+    return FutureBuilder<List<Match>>(
+      future: fetchMatches(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator(color: Colors.green));
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No matches found.'));
+        } else {
+          final matches = snapshot.data!;
 
-                      return MatchTile(
-                        homeTeam: homeName,
-                        awayTeam: awayName,
-                        time: match.matchTimeFormatted,
-                        homeOdds: match.homeOdds,
-                        drawOdds: match.drawOdds,
-                        awayOdds: match.awayOdds,
-                        league: match.league,
-                      );
-                    },
+          return FutureBuilder<List<String>>(
+            future: FavoriteService.getFavoriteTeamNames(),
+            builder: (context, favoriteSnapshot) {
+              if (!favoriteSnapshot.hasData) {
+                return Center(child: CircularProgressIndicator(color: Colors.green));
+              }
+
+              final favoriteTeams = favoriteSnapshot.data!;
+
+              final favoriteMatches = matches.where((match) =>
+              favoriteTeams.contains(match.homeTeamName) ||
+                  favoriteTeams.contains(match.awayTeamName)
+              ).toList();
+
+              if (favoriteMatches.isEmpty) {
+                return Center(child: Text('No matches found for your favorite teams.',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),));
+              }
+
+              return ListView.builder(
+                itemCount: favoriteMatches.length,
+                itemBuilder: (context, index) {
+                  final match = favoriteMatches[index];
+                  return MatchTile(
+                    homeTeam: match.homeTeamName,
+                    awayTeam: match.awayTeamName,
+                    time: match.matchTimeFormatted,
+                    homeOdds: match.homeOdds,
+                    drawOdds: match.drawOdds,
+                    awayOdds: match.awayOdds,
+                    league: match.league,
                   );
                 },
               );
