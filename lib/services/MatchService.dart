@@ -5,13 +5,14 @@ import '../widgets/MatchTile.dart';
 import '../services/FavoriteService.dart';
 
 class MatchService {
-  final CollectionReference matchesCollection =
-  FirebaseFirestore.instance.collection('matches');
+  final CollectionReference matchesCollection = FirebaseFirestore.instance
+      .collection('matches');
 
   Future<List<Match>> fetchMatches() async {
     try {
       //ORDER THE MATCHES ACCORDİNG TO THE CLOSEST MATCH TİME
-      QuerySnapshot snapshot = await matchesCollection.orderBy("matchTime").get();
+      QuerySnapshot snapshot =
+          await matchesCollection.orderBy("matchTime").get();
       print('Fetched documents: ${snapshot.docs.length}');
 
       List<Match> matches = [];
@@ -40,9 +41,6 @@ class MatchService {
       return [];
     }
   }
-
-
-
 
   Widget buildMatchList() {
     return FutureBuilder<List<Match>>(
@@ -93,18 +91,33 @@ class MatchService {
             future: FavoriteService.getFavoriteTeamNames(),
             builder: (context, favoriteSnapshot) {
               if (!favoriteSnapshot.hasData) {
-                return Center(child: CircularProgressIndicator(color: Colors.green));
+                return Center(
+                  child: CircularProgressIndicator(color: Colors.green),
+                );
               }
 
               final favoriteTeams = favoriteSnapshot.data!;
 
-              final favoriteMatches = matches.where((match) =>
-              favoriteTeams.contains(match.homeTeamName) ||
-                  favoriteTeams.contains(match.awayTeamName)
-              ).toList();
+              final favoriteMatches =
+                  matches
+                      .where(
+                        (match) =>
+                            favoriteTeams.contains(match.homeTeamName) ||
+                            favoriteTeams.contains(match.awayTeamName),
+                      )
+                      .toList();
 
               if (favoriteMatches.isEmpty) {
-                return Center(child: Text('No matches found for your favorite teams.',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),));
+                return Center(
+                  child: Text(
+                    'No matches found for your favorite teams.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                );
               }
 
               return ListView.builder(
