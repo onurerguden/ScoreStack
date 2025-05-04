@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MatchApiService {
-  int fetchMatchsinXdays = 3;
+  int fetchMatchsinXdays = 4;
   static const String _apiKey =
       '64c672feb9msh32fff8f59fc234dp11c6cbjsndd5b38cb5943';
   static const String _host = 'api-football-v1.p.rapidapi.com';
@@ -13,12 +13,41 @@ class MatchApiService {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
+
+  Future<http.Response> _getWithRetry(Uri url, {int maxRetries = 3}) async {
+    int attempt = 0;
+    while (true) {
+      final response = await http.get(url,
+        headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey});
+      if (response.statusCode != 429 || attempt >= maxRetries) {
+        return response;
+      }
+      final delaySec = 1 << attempt; // 1s, 2s, 4s
+      print('429 received, retrying in ${delaySec}s (attempt ${attempt+1})');
+      await Future.delayed(Duration(seconds: delaySec));
+      attempt++;
+    }
+  }
+
+  Future<void> _deletePastMatches() async {
+    final now = DateTime.now();
+    final batch = FirebaseFirestore.instance.batch();
+    final oldMatches = await FirebaseFirestore.instance
+        .collection('matches')
+        .where('matchTime', isLessThan: Timestamp.fromDate(now))
+        .get();
+    for (var doc in oldMatches.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
+    print('Deleted ${oldMatches.docs.length} past matches in batch');
+  }
+
   Future<List<String>> fetchLast5Matches(int teamId) async {
     final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2024'); // DEĞİŞTİ
 
-    final response = await http.get(
+    final response = await _getWithRetry(
       url,
-      headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey},
     );
 
     if (response.statusCode == 200) {
@@ -40,6 +69,7 @@ class MatchApiService {
         } else {
           matches.add('L');
         }
+        if (matches.length >= 5) break;
       }
 
       // En son 5 maçı al
@@ -61,31 +91,39 @@ class MatchApiService {
       {'id': 140, 'name': 'La Liga'},
     ];
 
+    await _deletePastMatches();
     for (var league in leagues) {
       await _fetchMatchesForLeague(league['id'], league['name']);
-      await Future.delayed(Duration(milliseconds: 200)); // Add delay
+      // Throttle between leagues to avoid rate limits
+      await Future.delayed(Duration(seconds: 1));
     }
-    await _deletePastMatches();
   }
 
 
   Future<void> _fetchMatchesForLeague(int leagueId, String leagueName) async {
     try {
       final now = DateTime.now();
+
+      final Set<int> updatedTeamIds = {};
+      final Map<int, DocumentReference> teamRefs = {};
       final toDate = now.add(Duration(days: fetchMatchsinXdays));
 
       final url = Uri.parse(
           '$_baseUrl/fixtures?league=$leagueId&season=2024&from=${_formatDate(now)}&to=${_formatDate(toDate)}'
       );
 
-      final response = await http.get(
+      final response = await _getWithRetry(
         url,
-        headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey},
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print('Fetched matches for $leagueName: ${data['response'].length}');
+
+        final batch = FirebaseFirestore.instance.batch();
+
+
+        final List<DocumentReference> newMatchRefs = [];
 
         for (var match in data['response']) {
           String homeName = match['teams']['home']['name'];
@@ -95,6 +133,8 @@ class MatchApiService {
           int homeTeamId = match['teams']['home']['id'];
           int awayTeamId = match['teams']['away']['id'];
           String date = match['fixture']['date'];
+          final matchDate = DateTime.parse(date);
+          if (matchDate.isBefore(now)) continue;
 
           String country = match['league']['country'];
           String leagueNameFromApi = match['league']['name'];
@@ -104,6 +144,12 @@ class MatchApiService {
 
           DocumentReference homeTeamRef = await _getOrCreateTeam(homeName, homeLogo, country, leagueNameFromApi, homeTeamId);
           DocumentReference awayTeamRef = await _getOrCreateTeam(awayName, awayLogo, country, leagueNameFromApi, awayTeamId);
+
+
+          updatedTeamIds.add(homeTeamId);
+          teamRefs[homeTeamId] = homeTeamRef;
+          updatedTeamIds.add(awayTeamId);
+          teamRefs[awayTeamId] = awayTeamRef;
 
           final existingMatch =
               await FirebaseFirestore.instance
@@ -122,7 +168,9 @@ class MatchApiService {
             continue;
           }
 
-          await FirebaseFirestore.instance.collection('matches').add({
+
+          final matchDocRef = FirebaseFirestore.instance.collection('matches').doc();
+          batch.set(matchDocRef, {
             'homeTeam': homeTeamRef,
             'awayTeam': awayTeamRef,
             'homeTeamName': homeName,
@@ -135,7 +183,42 @@ class MatchApiService {
             'fixtureId': fixtureId,
           });
 
+          newMatchRefs.add(matchDocRef);
+
           print('Saved match: $homeName vs $awayName');
+        }
+
+        await batch.commit();
+
+
+
+        final today = DateTime.now();
+        for (final matchRef in newMatchRefs) {
+          final snapshot = await matchRef.get();
+          final data = snapshot.data() as Map<String, dynamic>;
+          final matchTime = (data['matchTime'] as Timestamp).toDate();
+          if (matchTime.year == today.year && matchTime.month == today.month && matchTime.day == today.day) {
+            bool needsOdds = (data['homeOdds'] == 0.0 || data['drawOdds'] == 0.0 || data['awayOdds'] == 0.0);
+            if (needsOdds && data.containsKey('fixtureId')) {
+              final newOdds = await fetchOdds(data['fixtureId']);
+              await matchRef.update({
+                'homeOdds': newOdds['home']!,
+                'drawOdds': newOdds['draw']!,
+                'awayOdds': newOdds['away']!,
+              });
+              print('Updated missing odds for match: ${data['fixtureId']}');
+            }
+          }
+        }
+        // Update team documents for new matches
+        for (final teamId in updatedTeamIds) {
+          final last5 = await fetchLast5Matches(teamId);
+          await teamRefs[teamId]!.update({
+            'last5Matches': last5,
+            // Optionally update logoUrl, country or league if changed:
+            // 'logoUrl': <use latest fetched logo>,
+            // 'league': leagueName,
+          });
         }
       } else {
         print(
@@ -150,9 +233,8 @@ class MatchApiService {
   Future<Map<String, double>> fetchOdds(int fixtureId) async {
     final url = Uri.parse('$_baseUrl/odds?fixture=$fixtureId');
 
-    final response = await http.get(
+    final response = await _getWithRetry(
       url,
-      headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey},
     );
 
     if (response.statusCode == 200) {
@@ -217,21 +299,6 @@ Future<void> updateZeroOddsMatches() async {
         print('Still no odds for match: $fixtureId');
       }
 
-    }
-  }
-}
-Future<void> _deletePastMatches() async {
-  final now = DateTime.now();
-  final matches = await FirebaseFirestore.instance.collection('matches').get();
-
-  for (var doc in matches.docs) {
-    final matchData = doc.data();
-    if (matchData.containsKey('matchTime')) {
-      Timestamp matchTime = matchData['matchTime'];
-      if (matchTime.toDate().isBefore(now)) {
-        await doc.reference.delete();
-        print('Deleted past match: ${doc.id}');
-      }
     }
   }
 }
