@@ -210,14 +210,11 @@ class MatchApiService {
             }
           }
         }
-        // Update team documents for new matches
+
         for (final teamId in updatedTeamIds) {
           final last5 = await fetchLast5Matches(teamId);
           await teamRefs[teamId]!.update({
             'last5Matches': last5,
-            // Optionally update logoUrl, country or league if changed:
-            // 'logoUrl': <use latest fetched logo>,
-            // 'league': leagueName,
           });
         }
       } else {

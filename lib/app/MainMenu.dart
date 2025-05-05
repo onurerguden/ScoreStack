@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scorestack/widgets/CustomBottomNavigationBar.dart';
-
-
 import '../pages/CouponsPage.dart';
 import '../pages/FavoritesPage.dart';
 import '../pages/HomePage.dart';
