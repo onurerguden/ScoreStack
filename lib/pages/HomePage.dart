@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scorestack/services/MatchService.dart';
-import '../widgets/MatchTile.dart';
 import '../models/Match.dart';
 import '../services/MatchApiService.dart';
 import '../services/UpdateCheckerService.dart';
@@ -43,6 +42,7 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body:
           _isLoading
@@ -71,13 +71,13 @@ class HomePageState extends State<HomePage> {
                 children: [
                   Column(
                     children: [
-                      SizedBox(height: 20),
+                      SizedBox(height: 14),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Container(
                           alignment: Alignment.topCenter,
-                          width: 390,
-                          height: 400,
+                          width: size.width * 0.95,
+                          height: size.height * 0.46,
                           color: CupertinoColors.systemGrey3,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -88,7 +88,7 @@ class HomePageState extends State<HomePage> {
                                 child: Text(
                                   "Upcoming Matches",
                                   style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: size.width * 0.055,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -100,13 +100,13 @@ class HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 14),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(15),
                         child: Container(
                           alignment: Alignment.topCenter,
-                          width: 390,
-                          height: 255,
+                          width: size.width * 0.95,
+                          height: size.height * 0.265,
                           color: Colors.lightGreen,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -117,7 +117,7 @@ class HomePageState extends State<HomePage> {
                                 child: Text(
                                   "Favorite Team's Matches",
                                   style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: size.width * 0.055,
                                     fontWeight: FontWeight.w800,
                                     color: Colors.white,
                                   ),

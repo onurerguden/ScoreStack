@@ -38,53 +38,47 @@ class FavoritesPageState extends State<FavoritesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.black54,
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              const SizedBox(height: 20),
-              // All Teams Section
-              ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Container(
-                  alignment: Alignment.topCenter,
-                  width: 390,
-                  height: 670,
-                  color: CupertinoColors.systemGrey3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        color: const Color(0xFF2C2C2C),
-                        child: const Text(
-                          "All Teams",
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+      body: SafeArea(
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              alignment: Alignment.topCenter,
+              width: size.width * 0.95,
+              height: size.height * 0.74,
+              color: CupertinoColors.systemGrey3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    color: const Color(0xFF2C2C2C),
+                    child: Text(
+                      "All Teams",
+                      style: TextStyle(
+                        fontSize: size.width * 0.055,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
                       ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: allTeams.length,
-                          itemBuilder: (context, index) {
-                            return TeamTile(team: allTeams[index]);
-                          },
-                        ),
-                      ),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: allTeams.length,
+                      itemBuilder: (context, index) {
+                        return TeamTile(team: allTeams[index]);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
