@@ -5,8 +5,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TeamTile extends StatefulWidget {
   final Team team;
+  final bool? isFavorite;
+  final VoidCallback? onStarPressed;
 
-  TeamTile({super.key, required this.team});
+  const TeamTile({
+    super.key,
+    required this.team,
+    this.isFavorite,
+    this.onStarPressed,
+  });
 
   @override
   State<TeamTile> createState() => _TeamTileState();
@@ -40,12 +47,18 @@ class _TeamTileState extends State<TeamTile> {
         favorites.add(widget.team.name);
       }
       isFavorited = !isFavorited;
-      prefs.setStringList('favorites', favorites);
     });
+
+    await prefs.setStringList('favorites', favorites);
+
+    if (widget.onStarPressed != null) {
+      widget.onStarPressed!();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    bool displayFavorite = widget.isFavorite ?? isFavorited;
     return Card(
       elevation: 3,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -113,8 +126,8 @@ class _TeamTileState extends State<TeamTile> {
         ),
         trailing: IconButton(
           icon: Icon(
-            isFavorited ? Icons.star : Icons.star_border,
-            color: isFavorited ? Color(0xFFFFC107) : null,size: 30,
+            displayFavorite ? Icons.star : Icons.star_border,
+            color: displayFavorite ? Color(0xFFFFC107) : null,size: 30,
           ),
           onPressed: _toggleFavorite,
         ),

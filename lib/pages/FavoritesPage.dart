@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/Team.dart';
 import '../widgets/TeamTile.dart';
 
@@ -12,23 +13,66 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class FavoritesPageState extends State<FavoritesPage> {
+  final ScrollController _scrollController = ScrollController();
+
   List<Team> allTeams = []; // Tüm takımlar
   List<Team> favoriteTeams = []; // Favori takımlar
 
-  void fetchTeams() async {
+  Future<void> fetchTeams() async {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('team').get();
 
-    final teams =
-        snapshot.docs.map((doc) {
-          final data = doc.data() as Map<String, dynamic>;
-          return Team.fromMap(data, reference: doc.reference);
-        }).toList();
+    final teams = snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return Team.fromMap(data, reference: doc.reference);
+    }).toList();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> favorites = prefs.getStringList('favorites') ?? [];
 
     setState(() {
       allTeams = teams;
+
+      Map<String, int> favoriteOrder = {
+        for (int i = 0; i < favorites.length; i++) favorites[i]: i
+      };
+
+      allTeams.sort((a, b) {
+        final aFav = favorites.contains(a.name);
+        final bFav = favorites.contains(b.name);
+
+        if (aFav && bFav) {
+          return favoriteOrder[a.name]!.compareTo(favoriteOrder[b.name]!);
+        }
+        if (aFav && !bFav) return -1;
+        if (!aFav && bFav) return 1;
+
+        return 0; // maintain original order for non-favorites
+      });
     });
     print("All teams fetched: ${allTeams.length}");
+  }
+
+  bool isFavorite(Team team) {
+    return favoriteTeams.contains(team);
+  }
+
+  void toggleFavorite(Team team) {
+    setState(() {
+      if (favoriteTeams.contains(team)) {
+        favoriteTeams.remove(team);
+      } else {
+        favoriteTeams.add(team);
+      }
+
+      allTeams.sort((a, b) {
+        final aFav = favoriteTeams.contains(a);
+        final bFav = favoriteTeams.contains(b);
+        if (aFav && !bFav) return -1;
+        if (!aFav && bFav) return 1;
+        return 0;
+      });
+    });
   }
 
   @override
@@ -80,11 +124,42 @@ class FavoritesPageState extends State<FavoritesPage> {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: allTeams.length,
-                      itemBuilder: (context, index) {
-                        return TeamTile(team: allTeams[index]);
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 200),
+                      switchInCurve: Curves.easeInOut,
+                      switchOutCurve: Curves.easeInOut,
+                      transitionBuilder: (child, animation) {
+                        return SlideTransition(
+                          position: Tween<Offset>(
+                            begin: Offset(0, 0.06),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
                       },
+                      child: ListView.builder(
+                        key: ValueKey(allTeams.map((e) => e.name).join()),
+                        controller: _scrollController,
+                        itemCount: allTeams.length,
+                        itemBuilder: (context, index) {
+                          final team = allTeams[index];
+                          return TeamTile(
+                            key: ValueKey(team.name),
+                            team: team,
+                            onStarPressed: () async {
+                              await fetchTeams();
+                              _scrollController.animateTo(
+                                0,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
