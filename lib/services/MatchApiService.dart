@@ -211,11 +211,48 @@ class MatchApiService {
           }
         }
 
-        for (final teamId in updatedTeamIds) {
-          final last5 = await fetchLast5Matches(teamId);
-          await teamRefs[teamId]!.update({
-            'last5Matches': last5,
-          });
+        Map<int, List<String>> teamResults = {};
+
+        for (var match in data['response']) {
+          if (match['fixture']['status']['short'] != 'FT') continue;
+
+          int homeId = match['teams']['home']['id'];
+          int awayId = match['teams']['away']['id'];
+          int homeGoals = match['goals']['home'];
+          int awayGoals = match['goals']['away'];
+
+          String homeResult = homeGoals == awayGoals
+              ? 'D'
+              : homeGoals > awayGoals
+                  ? 'W'
+                  : 'L';
+          String awayResult = homeGoals == awayGoals
+              ? 'D'
+              : awayGoals > homeGoals
+                  ? 'W'
+                  : 'L';
+
+          teamResults.putIfAbsent(homeId, () => []);
+          teamResults.putIfAbsent(awayId, () => []);
+
+          teamResults[homeId]!.insert(0, homeResult);
+          teamResults[awayId]!.insert(0, awayResult);
+
+          // Limit to last 5
+          if (teamResults[homeId]!.length > 5) {
+            teamResults[homeId] = teamResults[homeId]!.sublist(0, 5);
+          }
+          if (teamResults[awayId]!.length > 5) {
+            teamResults[awayId] = teamResults[awayId]!.sublist(0, 5);
+          }
+        }
+
+        for (final entry in teamResults.entries) {
+          final teamId = entry.key;
+          final last5 = entry.value;
+          if (teamRefs.containsKey(teamId)) {
+            await teamRefs[teamId]!.update({'last5Matches': last5});
+          }
         }
       } else {
         print(
