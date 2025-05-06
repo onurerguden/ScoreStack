@@ -58,19 +58,24 @@ class FavoritesPageState extends State<FavoritesPage> {
                     padding: const EdgeInsets.all(12),
                     color: const Color(0xFF2C2C2C),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          "All Teams",
-                          style: TextStyle(
-                            fontSize: size.width * 0.05,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
+                        SizedBox(width: 27.8),
+                        Icon(Icons.list, color: Colors.white, size: 28),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "All Teams",
+                              style: TextStyle(
+                                fontSize: size.width * 0.05,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                        SizedBox(width: 15,),
-                        Icon(Icons.list,color: Colors.white)
+                        SizedBox(width: 45.8),
                       ],
                     ),
                   ),

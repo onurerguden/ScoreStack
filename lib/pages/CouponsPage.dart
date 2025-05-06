@@ -34,16 +34,28 @@ class CouponsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(12),
-                    color: Color(0xFF2C2C2C),
-                    child: Text(
-                      "Current Coupons",
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      textAlign: TextAlign.center,
+                    padding: const EdgeInsets.all(12),
+                    color: const Color(0xFF2C2C2C),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 28.8),
+                        Icon(Icons.request_quote, color: Colors.white, size: 28), // kuponu temsil eden ikon
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Current Coupons",
+                              style: TextStyle(
+                                fontSize: size.width * 0.05,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 46.8),
+                      ],
                     ),
                   ),
                   Expanded(
@@ -158,4 +170,3 @@ class CouponsPage extends StatelessWidget {
     );
   }
 }
-

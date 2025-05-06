@@ -79,22 +79,34 @@ class HomePageState extends State<HomePage> {
                           width: size.width * 0.95,
                           height: size.height * 0.46,
                           color: CupertinoColors.systemGrey3,
+
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Container(
                                 padding: EdgeInsets.all(12),
                                 color: Color(0xFF2C2C2C),
-                                child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [Text(
-                                  "Upcoming Matches",
-                                  style: TextStyle(
-                                    fontSize: size.width * 0.05,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),SizedBox(width: 15,),Icon(Icons.calendar_month_rounded,color: Colors.white,),]),
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 27.8),
+                                    Icon(Icons.calendar_month_rounded, color: Colors.white, size: 28),
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Upcoming Matches",
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.05,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 44.8),
+                                  ],
+                                ),
                               ),
                               Expanded(child: _matchService.buildMatchList()),
                             ],
@@ -116,17 +128,24 @@ class HomePageState extends State<HomePage> {
                                 padding: EdgeInsets.all(12),
                                 color: Colors.green[800],
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      "Favorite Team's Matches",
-                                      style: TextStyle(
-                                        fontSize: size.width * 0.05,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.white,
+                                    SizedBox(width: 27.8,),
+                                    Icon(Icons.star, color: Color(0xFFFFC107),size: 28,),
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Favorite Team's Matches",
+                                          style: TextStyle(
+                                            fontSize: size.width * 0.05,
+                                            fontWeight: FontWeight.w800,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
-                                      textAlign: TextAlign.center,
-                                    ),SizedBox(width: 15,),Icon(Icons.star,color: Color(0xFFFFC107),)
+                                    ),
+                                    SizedBox(width: 22.4),
                                   ],
                                 ),
                               ),

@@ -108,13 +108,13 @@ class _TeamTileState extends State<TeamTile> {
                 fontStyle: FontStyle.italic,
               ),
             ),
-            SizedBox(height: 2.5,)
+            SizedBox(height: 1,)
           ],
         ),
         trailing: IconButton(
           icon: Icon(
             isFavorited ? Icons.star : Icons.star_border,
-            color: isFavorited ? Color(0xFFFFC107) : null,
+            color: isFavorited ? Color(0xFFFFC107) : null,size: 30,
           ),
           onPressed: _toggleFavorite,
         ),
