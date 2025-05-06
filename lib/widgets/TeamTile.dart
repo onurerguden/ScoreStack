@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/Team.dart';
 import '../services/FavoriteService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../pages/CouponsPage.dart';
+
 
 class TeamTile extends StatefulWidget {
   final Team team;

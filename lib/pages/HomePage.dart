@@ -4,6 +4,7 @@ import 'package:scorestack/services/MatchService.dart';
 import '../models/Match.dart';
 import '../services/MatchApiService.dart';
 import '../services/UpdateCheckerService.dart';
+import '../pages/CouponsPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

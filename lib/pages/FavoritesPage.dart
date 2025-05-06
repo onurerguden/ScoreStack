@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/Team.dart';
 import '../widgets/TeamTile.dart';
+import '../pages/CouponsPage.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
