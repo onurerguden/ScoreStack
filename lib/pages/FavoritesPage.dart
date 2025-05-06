@@ -15,14 +15,15 @@ class FavoritesPageState extends State<FavoritesPage> {
   List<Team> allTeams = []; // Tüm takımlar
   List<Team> favoriteTeams = []; // Favori takımlar
 
-
   void fetchTeams() async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('team').get();
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('team').get();
 
-    final teams = snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return Team.fromMap(data, reference: doc.reference);
-    }).toList();
+    final teams =
+        snapshot.docs.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return Team.fromMap(data, reference: doc.reference);
+        }).toList();
 
     setState(() {
       allTeams = teams;
@@ -56,14 +57,21 @@ class FavoritesPageState extends State<FavoritesPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     color: const Color(0xFF2C2C2C),
-                    child: Text(
-                      "All Teams",
-                      style: TextStyle(
-                        fontSize: size.width * 0.055,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      textAlign: TextAlign.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "All Teams",
+                          style: TextStyle(
+                            fontSize: size.width * 0.05,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(width: 15,),
+                        Icon(Icons.list,color: Colors.white)
+                      ],
                     ),
                   ),
                   Expanded(

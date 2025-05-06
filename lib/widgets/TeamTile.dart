@@ -48,7 +48,7 @@ class _TeamTileState extends State<TeamTile> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
         leading: Container(
           child: Image.network(
@@ -60,14 +60,14 @@ class _TeamTileState extends State<TeamTile> {
         ),
         title: Text(
           widget.team.name,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '${widget.team.country} • ${widget.team.league}',
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: Colors.grey[600],fontSize: 13),
             ),
             SizedBox(height: 4),
             widget.team.last5Matches != null && widget.team.last5Matches!.isNotEmpty

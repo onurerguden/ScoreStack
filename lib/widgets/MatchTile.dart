@@ -44,7 +44,7 @@ class MatchTile extends StatelessWidget {
 
     return Card(
       elevation: 3,
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: ListTile(
         leading: Container(
           child: Image.asset(
@@ -57,7 +57,7 @@ class MatchTile extends StatelessWidget {
 
         title: Text(
           "$homeTeam vs $awayTeam",
-          style: TextStyle(fontWeight: FontWeight.w800),
+          style: TextStyle(fontWeight: FontWeight.w800,fontSize: 14.5),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +77,7 @@ class MatchTile extends StatelessWidget {
                     Text(
                       "Home: ${_formatOdds(homeOdds)}",
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.green[800],
                         fontWeight: FontWeight.bold,
                       ),
@@ -86,7 +86,7 @@ class MatchTile extends StatelessWidget {
                     Text(
                       "Draw: ${_formatOdds(drawOdds)}",
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.green[800],
                         fontWeight: FontWeight.bold,
                       ),

@@ -89,7 +89,7 @@ class HomePageState extends State<HomePage> {
                                     children: [Text(
                                   "Upcoming Matches",
                                   style: TextStyle(
-                                    fontSize: size.width * 0.055,
+                                    fontSize: size.width * 0.05,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -121,7 +121,7 @@ class HomePageState extends State<HomePage> {
                                     Text(
                                       "Favorite Team's Matches",
                                       style: TextStyle(
-                                        fontSize: size.width * 0.055,
+                                        fontSize: size.width * 0.05,
                                         fontWeight: FontWeight.w800,
                                         color: Colors.white,
                                       ),
