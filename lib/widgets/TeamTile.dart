@@ -108,6 +108,7 @@ class _TeamTileState extends State<TeamTile> {
                 fontStyle: FontStyle.italic,
               ),
             ),
+            SizedBox(height: 2.5,)
           ],
         ),
         trailing: IconButton(

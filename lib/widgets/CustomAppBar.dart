@@ -28,7 +28,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
           const Text(
             "ScoreStack",
             style: TextStyle(
-              fontSize: 35,
+              fontSize: 31,
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
