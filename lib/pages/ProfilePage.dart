@@ -14,7 +14,7 @@ class ProfilePageState extends State<ProfilePage> {
       backgroundColor: Color(0xFF2C2C2C),
         appBar: AppBar(
             title: Text(
-              "Settings",
+              "Profile",
               style: TextStyle(
                 fontSize: 19,
                 color: Colors.white,
