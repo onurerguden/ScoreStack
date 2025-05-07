@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../app/MainMenu.dart';
 
 class InitialCheckboxPage extends StatefulWidget {
@@ -12,91 +14,241 @@ class CheckboxState extends State<InitialCheckboxPage> {
   bool isChecked = false;
 
   void skip() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => MainMenu()),
-    );
+    Navigator.of(
+      context,
+    ).pushReplacement(MaterialPageRoute(builder: (_) => MainMenu()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF2C2C2C),
       appBar: AppBar(
-        centerTitle: true,
-        title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/ScoreStackLogo4-removebg-preview.png",
-                height: 32,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                "Warning About Betting & Its Harms",
-                style: TextStyle(
-                  fontSize: 19,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ]
-        ),
-        backgroundColor: Colors.green[800],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        toolbarHeight: 75,
+        title:
+        Row(
+          mainAxisAlignment:  MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Text(
-              "Betting is riskful and eventually leads to financial difficulties. It should never be seen as a financial problem solver and it is not reliable. Keep it at minimum, and try to quit as early as possible.",
-              style: TextStyle(fontSize: 20, color: Colors.white),
-              textAlign: TextAlign.center,
+            Image.asset(
+              'assets/images/ScoreStackLogo4-removebg-preview.png',
+              width: 40,
             ),
-            const SizedBox(height: 20),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  activeColor: Colors.green[800],
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isChecked = value ?? false;
-                    });
-                  },
-                ),
-                Expanded(
-                  child: Text(
-                    "I understand how betting can end up harming me, and I know my limits on playing bet.",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 17,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: ElevatedButton(
-                onPressed: isChecked ? skip : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green[800],
-                ),
-                child: Text(
-                  "Continue",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+            SizedBox(width: 2),
+            const Text(
+              "ScoreStack",
+              style: TextStyle(
+                fontSize: 31,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
             ),
           ],
         ),
+        backgroundColor: Color(0xFF2C2C2C),
       ),
+      body: SafeArea(
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              alignment: Alignment.topCenter,
+              width: MediaQuery.of(context).size.width * 0.95,
+              height: MediaQuery.of(context).size.height * 0.74,
+              color: CupertinoColors.systemGrey3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        color: Color(0xFF2C2C2C),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 17.8),
+                            const Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.red,
+                              size: 28,
+                            ),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Warning About Betting & Harms",
+                                  style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width * 0.045,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                            SizedBox( width: 28,)
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[600],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Icon(Icons.report_gmailerrorred_rounded, color: Color(0xFFFFC107)),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Betting is riskful and leads to financial problems. It is not a financial problem solver and it is not reliable. Keep it at minimum, and try to quit as early as possible.",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 17,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.lightGreen,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(Icons.link, color: Colors.blue,),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        "Visit the following page to learn more about the harms of gambling:",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 17,
+                                        ),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                GestureDetector(
+                                  onTap: () async {
+                                    final Uri url = Uri.parse("https://www.begambleaware.org/");
+                                    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                      throw 'Could not launch $url';
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      "Learn more about gambling risks",
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 17,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 4,)
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.green[800],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Checkbox(
+                                  value: isChecked,
+                                  activeColor: Colors.lightGreen,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      isChecked = value ?? false;
+                                    });
+                                  },
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          "I understand how betting can end up harming me, and I know my limits on playing bet.",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: isChecked ? skip : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.lightGreen,
+                              ),
+                              child: const Text(
+                                "Continue",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      backgroundColor: Colors.grey[600],
     );
   }
 }
