@@ -39,13 +39,23 @@ class CheckboxState extends State<CheckboxPage> {
       backgroundColor: Color(0xFF2C2C2C),
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          "User Warning About Betting & Its Harms",
-          style: TextStyle(
-            fontSize: 19,
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              "assets/images/ScoreStackLogo4-removebg-preview.png",
+              height: 32,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              "Warning About Betting & Its Harms",
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ]
         ),
         backgroundColor: Colors.green[800],
       ),
