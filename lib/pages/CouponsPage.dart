@@ -1,10 +1,96 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets/CouponStack.dart';
-import '../models/Match.dart';
 
-//TeamDart
+class CheckboxPage extends StatefulWidget {
+  const CheckboxPage({super.key});
+
+  @override
+  CheckboxState createState() => CheckboxState();
+}
+
+class CheckboxState extends State<CheckboxPage> {
+  bool isChecked = false;
+
+  void skip() {
+    Navigator.pop(context, true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF2C2C2C),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "User Warning About Betting & Its Harms",
+          style: TextStyle(
+            fontSize: 19,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: Colors.green[800],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Betting is riskful and eventually leads to financial difficulties. It should never be seen as a financial problem solver and it is not reliable. Keep it at minimum, and try to quit as early as possible.",
+              style: TextStyle(fontSize: 20, color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Checkbox(
+                  value: isChecked,
+                  activeColor: Colors.green[800],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isChecked = value ?? false;
+                    });
+                  },
+                ),
+                Expanded(
+                  child: Text(
+                    "I understand how betting can end up harming me, and I know my limits on playing bet.",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: ElevatedButton(
+                onPressed: skip,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[800],
+                ),
+                child: Text(
+                  "Continue",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
 class Team {
   final String name;
   final DocumentReference reference;
@@ -46,9 +132,7 @@ class Team {
     };
   }
 }
-//end of TeamDart
 
-//MatchDart
 class Match {
   final DocumentReference homeTeamRef;
   final DocumentReference awayTeamRef;
@@ -92,9 +176,7 @@ class Match {
     );
   }
 }
-//end of matchdart
 
-//coupon.dart
 class CouponItem {
   final Match match;
   final int selectedResult;
@@ -129,8 +211,6 @@ class Coupon {
     return Coupon(selectedMatches: matches, totalOdd: total);
   }
 }
-
-//end of Coupon.dart
 
 final demoMatch = Match(
   homeTeamRef: FirebaseFirestore.instance.doc('teams/home'),
@@ -221,11 +301,12 @@ final demoCoupon5Matches = Coupon.create([
   ),
 ]);
 
-//couponpage.dart
 class CouponsPage extends StatelessWidget {
+  const CouponsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final PageController _controller = PageController(
+    final PageController controller = PageController(
       viewportFraction: 0.65,
       initialPage: 1,
     );
@@ -283,10 +364,7 @@ class CouponsPage extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          CouponStack(
-                            controller: _controller,
-                            coupons: coupons,
-                          ),
+                          CouponStack(controller: controller, coupons: coupons),
 
                           Container(
                             height: 2,
@@ -320,7 +398,7 @@ class CouponsPage extends StatelessWidget {
                                     padding: EdgeInsets.all(16),
                                   ),
                                   onPressed: () {
-                                    _controller.previousPage(
+                                    controller.previousPage(
                                       duration: Duration(milliseconds: 300),
                                       curve: Curves.easeInOut,
                                     );
@@ -344,7 +422,7 @@ class CouponsPage extends StatelessWidget {
                                   ),
                                   onPressed: () {
                                     final currentIndex =
-                                        _controller.page!.round() %
+                                        controller.page!.round() %
                                         coupons.length;
                                     final coupon = coupons[currentIndex];
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -374,7 +452,7 @@ class CouponsPage extends StatelessWidget {
                                     padding: EdgeInsets.all(16),
                                   ),
                                   onPressed: () {
-                                    _controller.nextPage(
+                                    controller.nextPage(
                                       duration: Duration(milliseconds: 300),
                                       curve: Curves.easeInOut,
                                     );
@@ -402,14 +480,15 @@ class CouponsPage extends StatelessWidget {
   }
 }
 
-//end of couponpage.dart
-
-//CouponStack
 class CouponStack extends StatefulWidget {
   final PageController controller;
   final List<Coupon> coupons;
 
-  CouponStack({required this.controller, required this.coupons});
+  const CouponStack({
+    super.key,
+    required this.controller,
+    required this.coupons,
+  });
 
   @override
   _CouponStackState createState() => _CouponStackState();
@@ -481,7 +560,6 @@ class _CouponStackState extends State<CouponStack> {
                                     ),
                                   ),
                                   SizedBox(width: 29),
-                                  // to balance the logo's space
                                 ],
                               ),
                               Padding(
@@ -514,8 +592,7 @@ class _CouponStackState extends State<CouponStack> {
                                         prediction = '?';
                                     }
                                     return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                      ),
+                                      padding: const EdgeInsets.symmetric(),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -562,4 +639,3 @@ class _CouponStackState extends State<CouponStack> {
   }
 }
 
-//End of CoupnsStack

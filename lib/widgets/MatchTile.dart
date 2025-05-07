@@ -9,7 +9,7 @@ class MatchTile extends StatelessWidget {
   final double awayOdds;
   final String league;
 
-  MatchTile({
+  const MatchTile({
     super.key,
     required this.homeTeam,
     required this.awayTeam,

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scorestack/services/MatchService.dart';
-import '../models/Match.dart';
 import '../services/MatchApiService.dart';
 import '../services/UpdateCheckerService.dart';
 import '../pages/CouponsPage.dart';
@@ -9,6 +8,7 @@ import '../pages/CouponsPage.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
   State<HomePage> createState() => HomePageState();
 }
 
@@ -42,6 +42,7 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(

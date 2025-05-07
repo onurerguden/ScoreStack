@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/Team.dart';
-import '../services/FavoriteService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/CouponsPage.dart';
 
@@ -85,9 +83,9 @@ class _TeamTileState extends State<TeamTile> {
               style: TextStyle(color: Colors.grey[600],fontSize: 13),
             ),
             SizedBox(height: 4),
-            widget.team.last5Matches != null && widget.team.last5Matches!.isNotEmpty
+            widget.team.last5Matches.isNotEmpty
                 ? Row(
-              children: widget.team.last5Matches!.map((match) {
+              children: widget.team.last5Matches.map((match) {
                 Color color;
                 String result = match.substring(0, 1);
                 if (result == "W") {

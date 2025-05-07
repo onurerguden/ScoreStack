@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/Match.dart';
 import '../widgets/MatchTile.dart';
 import '../services/FavoriteService.dart';
 import '../pages/CouponsPage.dart';
