@@ -16,7 +16,7 @@ class SettingsPageState extends State<SettingsPage> {
         title: Text(
           "Settings",
           style: TextStyle(
-            fontSize: 19,
+            fontSize: 23,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
