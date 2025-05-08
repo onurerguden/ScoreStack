@@ -95,7 +95,7 @@ class MatchTile extends StatelessWidget {
                     Text(
                       "Away: ${_formatOdds(awayOdds)}",
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.green[800],
                         fontWeight: FontWeight.bold,
                       ),
