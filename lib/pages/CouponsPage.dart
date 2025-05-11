@@ -2,6 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+Future<List<Coupon>> getCoupons() async {
+  final coupons = await FirebaseFirestore.instance.collection("coupons").get();
+
+  return coupons.docs.map((doc) {
+    final matches =
+        (doc["matches"] as List).map((matchMap) {
+          return CouponItem(
+            match: Match(
+              homeTeamRef: null,
+              awayTeamRef: null,
+              homeTeamName: matchMap["team1"],
+              awayTeamName: matchMap["team2"],
+              matchTime: DateTime.parse(matchMap['startTime']),
+              homeOdds: matchMap['odd'],
+              drawOdds: matchMap['odd'],
+              awayOdds: matchMap['odd'],
+              league: 'Unknown',
+            ),
+            selectedResult: 1,
+          );
+        }).toList();
+    return Coupon.create(matches);
+  }).toList();
+}
+
 class Team {
   final String name;
   final DocumentReference reference;
@@ -45,8 +70,8 @@ class Team {
 }
 
 class Match {
-  final DocumentReference homeTeamRef;
-  final DocumentReference awayTeamRef;
+  final DocumentReference? homeTeamRef;
+  final DocumentReference? awayTeamRef;
   final String homeTeamName;
   final String awayTeamName;
   final DateTime matchTime;
@@ -221,11 +246,11 @@ class CouponsPage extends StatelessWidget {
       viewportFraction: 0.65,
       initialPage: 1,
     );
-    final List<Coupon> coupons = [demoCoupon, demoCoupon5Matches];
 
     final size = MediaQuery.of(context).size;
     final width = size.width * 0.95;
     final height = size.height * 0.74;
+
     return Scaffold(
       backgroundColor: Colors.black54,
       body: SafeArea(
@@ -251,7 +276,6 @@ class CouponsPage extends StatelessWidget {
                           color: Colors.white,
                           size: 28,
                         ),
-
                         Expanded(
                           child: Align(
                             alignment: Alignment.center,
@@ -271,114 +295,129 @@ class CouponsPage extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CouponStack(controller: controller, coupons: coupons),
+                    child: FutureBuilder<List<Coupon>>(
+                      future: getCoupons(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(child: Text("No coupons found."));
+                        }
 
-                          Container(
-                            height: 2,
-                            margin: EdgeInsets.symmetric(horizontal: 25),
-                            color: Colors.black54,
-                          ),
+                        final coupons = snapshot.data!;
 
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 16,
-                              horizontal: 12,
-                            ),
-                            margin: EdgeInsets.symmetric(
-                              horizontal: size.width * 0.05,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.lightGreen,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: Colors.green[800]!,
-                                width: 5,
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: CouponStack(
+                                controller: controller,
+                                coupons: coupons,
                               ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green[800],
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(16),
-                                  ),
-                                  onPressed: () {
-                                    controller.previousPage(
-                                      duration: Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.keyboard_arrow_left_outlined,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green[800],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 14,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    final currentIndex =
-                                        controller.page!.round() %
-                                        coupons.length;
-                                    final coupon = coupons[currentIndex];
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          "Saved: ${coupon.totalOdd.toStringAsFixed(2)}x | ${coupon.selectedMatches.length} Maç",
-                                        ),
-                                        duration: Duration(
-                                          microseconds: 800000,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    "Save Coupon!",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green[800],
-                                    shape: CircleBorder(),
-                                    padding: EdgeInsets.all(16),
-                                  ),
-                                  onPressed: () {
-                                    controller.nextPage(
-                                      duration: Duration(milliseconds: 300),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.keyboard_arrow_right_outlined,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                ),
-                              ],
+                            Container(
+                              height: 2,
+                              margin: EdgeInsets.symmetric(horizontal: 25),
+                              color: Colors.black54,
                             ),
-                          ),
-                        ],
-                      ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 12,
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                horizontal: size.width * 0.05,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.lightGreen,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.green[800]!,
+                                  width: 5,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[800],
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(16),
+                                    ),
+                                    onPressed: () {
+                                      controller.previousPage(
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.keyboard_arrow_left_outlined,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[800],
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 14,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      final currentIndex =
+                                          controller.page!.round();
+                                      final coupon = coupons[currentIndex];
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Saved: ${coupon.totalOdd.toStringAsFixed(2)}x | ${coupon.selectedMatches.length} Maç",
+                                          ),
+                                          duration: Duration(milliseconds: 800),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "Save Coupon!",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[800],
+                                      shape: CircleBorder(),
+                                      padding: EdgeInsets.all(16),
+                                    ),
+                                    onPressed: () {
+                                      controller.nextPage(
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.keyboard_arrow_right_outlined,
+                                      color: Colors.white,
+                                      size: 25,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -549,4 +588,3 @@ class _CouponStackState extends State<CouponStack> {
     );
   }
 }
-

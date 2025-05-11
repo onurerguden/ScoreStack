@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scorestack/services/MatchService.dart';
+import '../services/CouponService.dart';
 import '../services/MatchApiService.dart';
 import '../services/UpdateCheckerService.dart';
 import '../pages/CouponsPage.dart';
@@ -39,6 +40,16 @@ class HomePageState extends State<HomePage> {
     setState(() {
       _isLoading = false;
       _matchesFuture = _matchService.fetchMatches();
+      _matchesFuture.then((matches) async {
+        final mappedMatches = matches.map((m) => {
+          "team1": m.homeTeamName,
+          "team2": m.awayTeamName,
+          "odd": m.awayOdds,
+          "startTime": m.matchTime.toIso8601String(),
+        }.cast<String, dynamic>()).toList();
+
+        await CouponService().createCoupons(mappedMatches);
+      });
     });
   }
 
