@@ -232,11 +232,23 @@ class MatchApiService {
                   ? 'W'
                   : 'L';
 
-          teamResults.putIfAbsent(homeId, () => []);
-          teamResults.putIfAbsent(awayId, () => []);
+          if (!teamResults.containsKey(homeId)) {
+            final doc = await teamRefs[homeId]!.get();
+            final existing = (doc['last5Matches'] as List?)?.cast<String>() ?? [];
+            teamResults[homeId] = existing;
+          }
+          if (!teamResults.containsKey(awayId)) {
+            final doc = await teamRefs[awayId]!.get();
+            final existing = (doc['last5Matches'] as List?)?.cast<String>() ?? [];
+            teamResults[awayId] = existing;
+          }
 
-          teamResults[homeId]!.insert(0, homeResult);
-          teamResults[awayId]!.insert(0, awayResult);
+          if (teamResults[homeId]!.isEmpty || teamResults[homeId]!.first != homeResult) {
+            teamResults[homeId]!.insert(0, homeResult);
+          }
+          if (teamResults[awayId]!.isEmpty || teamResults[awayId]!.first != awayResult) {
+            teamResults[awayId]!.insert(0, awayResult);
+          }
 
           // Limit to last 5
           if (teamResults[homeId]!.length > 5) {

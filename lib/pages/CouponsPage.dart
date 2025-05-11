@@ -23,7 +23,7 @@ Future<List<Coupon>> getCoupons() async {
             selectedResult: 1,
           );
         }).toList();
-    return Coupon.create(matches);
+    return Coupon.create(matches, title: doc['title'] ?? 'Coupon');
   }).toList();
 }
 
@@ -136,15 +136,20 @@ class CouponItem {
 class Coupon {
   final List<CouponItem> selectedMatches;
   final double totalOdd;
+  final String title;
 
-  Coupon({required this.selectedMatches, required this.totalOdd});
+  Coupon({
+    required this.selectedMatches,
+    required this.totalOdd,
+    required this.title,
+  });
 
-  factory Coupon.create(List<CouponItem> matches) {
+  factory Coupon.create(List<CouponItem> matches, {String title = "Coupon"}) {
     double total = 1.0;
     for (var item in matches) {
-      total = total * item.getSelectedOdd();
+      total *= item.getSelectedOdd();
     }
-    return Coupon(selectedMatches: matches, totalOdd: total);
+    return Coupon(selectedMatches: matches, totalOdd: total, title: title);
   }
 }
 
@@ -300,7 +305,7 @@ class CouponsPage extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return Center(child: CircularProgressIndicator(color: Colors.green,),);
                         }
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Center(child: Text("No coupons found."));
@@ -309,13 +314,13 @@ class CouponsPage extends StatelessWidget {
                         final coupons = snapshot.data!;
 
                         return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: CouponStack(
+                               CouponStack(
                                 controller: controller,
                                 coupons: coupons,
                               ),
-                            ),
                             Container(
                               height: 2,
                               margin: EdgeInsets.symmetric(horizontal: 25),
@@ -323,11 +328,11 @@ class CouponsPage extends StatelessWidget {
                             ),
                             Container(
                               padding: EdgeInsets.symmetric(
-                                vertical: 16,
-                                horizontal: 12,
+                                vertical: 8,
+                                horizontal: 8,
                               ),
                               margin: EdgeInsets.symmetric(
-                                horizontal: size.width * 0.05,
+                                horizontal: size.width * 0.12,
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.lightGreen,
@@ -345,7 +350,7 @@ class CouponsPage extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green[800],
                                       shape: CircleBorder(),
-                                      padding: EdgeInsets.all(16),
+                                      padding: EdgeInsets.all(12),
                                     ),
                                     onPressed: () {
                                       controller.previousPage(
@@ -363,11 +368,11 @@ class CouponsPage extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green[800],
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       padding: EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 14,
+                                        horizontal: 12,
+                                        vertical: 12,
                                       ),
                                     ),
                                     onPressed: () {
@@ -389,8 +394,8 @@ class CouponsPage extends StatelessWidget {
                                       "Save Coupon!",
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
                                       ),
                                     ),
                                   ),
@@ -398,7 +403,7 @@ class CouponsPage extends StatelessWidget {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green[800],
                                       shape: CircleBorder(),
-                                      padding: EdgeInsets.all(16),
+                                      padding: EdgeInsets.all(12),
                                     ),
                                     onPressed: () {
                                       controller.nextPage(
@@ -458,7 +463,7 @@ class _CouponStackState extends State<CouponStack> {
     final size = MediaQuery.of(context).size;
 
     return SizedBox(
-      height: size.height * 0.45,
+      height: size.height * 0.445,
       child: PageView.builder(
         controller: widget.controller,
         itemCount: widget.coupons.length,
@@ -484,7 +489,7 @@ class _CouponStackState extends State<CouponStack> {
                       ),
                       child: SizedBox(
                         width: size.width * 0.9,
-                        height: size.height * 0.58,
+                        height: size.height * 0.45,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
@@ -501,10 +506,10 @@ class _CouponStackState extends State<CouponStack> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        'Coupon',
+                                        coupon.title+" Coupon",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w900,
-                                          fontSize: 20,
+                                          fontSize: 16.2,
                                         ),
                                       ),
                                     ),
@@ -554,6 +559,7 @@ class _CouponStackState extends State<CouponStack> {
                                             ),
                                           ),
                                           Text(
+                                            style: TextStyle(fontSize: 13.5),
                                             '${match.matchTime.day}/${match.matchTime.month} ${match.matchTime.hour}:${match.matchTime.minute.toString().padLeft(2, '0')}  |  Bet: $prediction  | Odd: ${item.getSelectedOdd().toStringAsFixed(2)}',
                                           ),
                                           Divider(thickness: 1.3),
@@ -563,12 +569,12 @@ class _CouponStackState extends State<CouponStack> {
                                   },
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              SizedBox(height: 2),
                               Text(
                                 'Total Odd: ${coupon.totalOdd.toStringAsFixed(2)}x | ${coupon.selectedMatches.length} Matches',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
-                                  fontSize: 15,
+                                  fontSize: 14,
                                   color: Colors.black,
                                 ),
                                 textAlign: TextAlign.center,
@@ -586,5 +592,45 @@ class _CouponStackState extends State<CouponStack> {
         },
       ),
     );
+  }
+}
+
+class CouponService {
+  final FirebaseFirestore fbconnector = FirebaseFirestore.instance;
+
+  Future<void> createCoupons(List<Map<String, dynamic>> matches) async {
+    if (matches.isEmpty) return;
+
+    final couponCollection = fbconnector.collection("coupons");
+    final currentCoupons = await couponCollection.get();
+    for (var doc in currentCoupons.docs) {
+      await doc.reference.delete();
+    }
+
+    matches.sort((a, b) => (a["odd"] as num).compareTo(b["odd"] as num));
+
+    final guaranteed = matches.take(5).toList();
+    final normal = matches.sublist(1, 6);
+    final risky = matches.reversed.take(5).toList();
+
+    await uploadCoupon("Guaranteed", guaranteed);
+    await uploadCoupon("Normal", normal);
+    await uploadCoupon("Risky", risky);
+  }
+
+  Future<void> uploadCoupon(
+      String title,
+      List<Map<String, dynamic>> matches,
+      ) async {
+    final averageOdd =
+        matches.map((m) => m["odd"] as num).reduce((a, b) => a + b) /
+            matches.length;
+
+    await fbconnector.collection("coupons").add({
+      "title": title,
+      "matches": matches,
+      "odds": averageOdd,
+      "createdAt": FieldValue.serverTimestamp(),
+    });
   }
 }
