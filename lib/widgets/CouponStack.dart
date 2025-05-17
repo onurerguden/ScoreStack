@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/Coupon.dart';
-import '../pages/CouponsPage.dart';
 
 
 class CouponStack extends StatefulWidget {
@@ -74,7 +73,7 @@ class _CouponStackState extends State<CouponStack> {
                                   Expanded(
                                     child: Center(
                                       child: Text(
-                                        coupon.title+" Coupon",
+                                        "${coupon.title} Coupon",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w900,
                                           fontSize: 16.2,

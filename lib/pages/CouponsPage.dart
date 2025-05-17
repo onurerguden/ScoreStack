@@ -1,17 +1,41 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/Match.dart';
 import '../widgets/CouponStack.dart';
 import '../models/Coupon.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
-
-
-class CouponsPage extends StatelessWidget {
+class CouponsPage extends StatefulWidget {
   const CouponsPage({super.key});
 
-  @override
+  State<CouponsPage> createState() => CouponsPageState();
+}
+
+class CouponsPageState extends State<CouponsPage> {
+
+  int cost = 0;
+
+  void addCost() async {
+    setState(() {
+      cost += 1;
+    });
+    final p = await SharedPreferences.getInstance();
+    await p.setInt('cost', cost);
+  }
+
+  void initState() {
+    super.initState();
+    loadCost();
+  }
+
+  Future<void> loadCost() async {
+    final p = await SharedPreferences.getInstance();
+    setState(() {
+      cost = p.getInt('cost') ?? 0;
+    });
+  }
+
   Widget build(BuildContext context) {
     final PageController controller = PageController(
       viewportFraction: 0.65,
@@ -83,10 +107,34 @@ class CouponsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                               CouponStack(
-                                controller: controller,
-                                coupons: coupons,
+                            CouponStack(
+                              controller: controller,
+                              coupons: coupons,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Total spent: \$${cost.toString()}",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  ElevatedButton(
+                                    onPressed: addCost,
+                                    child: const Text("Add Cost", style: TextStyle(color: Colors.white),),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green[800]
+                                    )
+                                  )
+                                ],
                               ),
+                            ),
                             Container(
                               height: 2,
                               margin: EdgeInsets.symmetric(horizontal: 25),
@@ -110,7 +158,7 @@ class CouponsPage extends StatelessWidget {
                               ),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                MainAxisAlignment.spaceEvenly,
                                 children: [
                                   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -143,7 +191,7 @@ class CouponsPage extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       final currentIndex =
-                                          controller.page!.round();
+                                      controller.page!.round();
                                       final coupon = coupons[currentIndex];
                                       ScaffoldMessenger.of(
                                         context,
@@ -200,4 +248,3 @@ class CouponsPage extends StatelessWidget {
     );
   }
 }
-

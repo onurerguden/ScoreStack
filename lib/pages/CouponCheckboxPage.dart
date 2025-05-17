@@ -89,6 +89,32 @@ class CheckboxState extends State<CouponCheckboxPage> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(8)
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.dangerous, color: Colors.white),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                "Worldwide, up to 1 in 5 gambling addicts attempt suicide.",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 17
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                   Expanded(
@@ -110,7 +136,7 @@ class CheckboxState extends State<CouponCheckboxPage> {
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
-                                    "ScoreStack coupons don’t promise any wins. This app isn’t responsible for outcomes or changing odds. Please bet wisely.",
+                                    "ScoreStack doesn’t promise any win. This app isn’t responsible for outcomes. Bet wisely.",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w700,

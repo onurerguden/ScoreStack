@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../pages/CouponsPage.dart';
 import '../models/Team.dart';
 
 

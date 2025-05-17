@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/TeamTile.dart';
-import '../pages/CouponsPage.dart';
 import '../models/Team.dart';
 
 class FavoritesPage extends StatefulWidget {
