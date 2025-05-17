@@ -91,7 +91,7 @@ class CheckboxState extends State<InitialCheckboxPage> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 25),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.85,
                         padding: const EdgeInsets.all(12),
@@ -150,7 +150,7 @@ class CheckboxState extends State<InitialCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 25),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -207,7 +207,7 @@ class CheckboxState extends State<InitialCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 25),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -247,7 +247,7 @@ class CheckboxState extends State<InitialCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 25),
                           Center(
                             child: ElevatedButton(
                               onPressed: isChecked ? skip : null,
