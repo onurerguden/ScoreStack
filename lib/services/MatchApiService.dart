@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MatchApiService {
-  int fetchMatchsinXdays = 3;
+  int fetchMatchsinXdays = 7;
   static const String _apiKey =
-      '64c672feb9msh32fff8f59fc234dp11c6cbjsndd5b38cb5943';
+      '2fb2b575b5msh4cbb2a0204661dep1b2879jsn33d0c3db9ba2';
   static const String _host = 'api-football-v1.p.rapidapi.com';
   static const String _baseUrl = 'https://api-football-v1.p.rapidapi.com/v3';
 
@@ -29,6 +29,7 @@ class MatchApiService {
     }
   }
 
+
   Future<void> _deletePastMatches() async {
     final now = DateTime.now();
     final batch = FirebaseFirestore.instance.batch();
@@ -42,6 +43,8 @@ class MatchApiService {
     await batch.commit();
     print('Deleted ${oldMatches.docs.length} past matches in batch');
   }
+
+
 
   Future<List<String>> fetchLast5Matches(int teamId) async {
     final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2024'); // DEĞİŞTİ
@@ -86,9 +89,13 @@ class MatchApiService {
 
   Future<void> fetchMatchesForLeagues() async {
     List<Map<String, dynamic>> leagues = [
-      {'id': 203, 'name': 'Süper Lig'},
-      {'id': 39, 'name': 'Premier League'},
-      {'id': 140, 'name': 'La Liga'},
+      //{'id': 214, 'name': 'Allsvenskan'},
+      {'id': 106, 'name': 'Eliteserien'},
+      {'id': 253, 'name': 'MLS'},
+      //{'id': 203, 'name': 'Süper Lig'},
+      //{'id': 39, 'name': 'Premier League'},
+      //{'id': 140, 'name': 'La Liga'},
+      {'id': 144, 'name': 'K League 1'},
     ];
 
     await _deletePastMatches();
