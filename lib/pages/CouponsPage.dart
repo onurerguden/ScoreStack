@@ -203,9 +203,9 @@ class CouponsPageState extends State<CouponsPage> {
                                         else predictionStr = "2";
 
                                         return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
-                                      }).join(" | ");
+                                      }).join("\n");
 
-                                      final couponText = "ODD: ${coupon.totalOdd.toStringAsFixed(2)} → $matchSummaries";
+                                      final couponText = "ODD: ${coupon.totalOdd.toStringAsFixed(2)}\n$matchSummaries";
 
                                       final prefs = await SharedPreferences.getInstance();
                                       List<String> saved = prefs.getStringList('savedCoupons') ?? [];

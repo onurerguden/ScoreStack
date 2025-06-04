@@ -66,7 +66,7 @@ class ProfilePageState extends State<ProfilePage> {
             Text(
               "Favorites",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.amber,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -78,7 +78,7 @@ class ProfilePageState extends State<ProfilePage> {
                 decoration: BoxDecoration(
                   color: Colors.white12,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.greenAccent, width: 2),
+                  border: Border.all(color: Colors.amberAccent, width: 2),
                 ),
                 padding: const EdgeInsets.all(8),
                 child: favoriteTeams.isEmpty ? Center(
@@ -101,7 +101,7 @@ class ProfilePageState extends State<ProfilePage> {
             Text(
               "Saved Coupons",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.greenAccent,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -112,7 +112,7 @@ class ProfilePageState extends State<ProfilePage> {
               decoration: BoxDecoration(
                 color: Colors.white12,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.orange, width: 2),
+                border: Border.all(color: Colors.greenAccent, width: 2),
               ),
               padding: const EdgeInsets.all(8),
               child: savedCoupons.isEmpty
@@ -125,15 +125,32 @@ class ProfilePageState extends State<ProfilePage> {
                   : ListView.builder(
                 itemCount: savedCoupons.length,
                 itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white, width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black45,
+                          blurRadius: 4,
+                          offset: Offset(2, 2),
+                        ),
+                      ],
+                    ),
                     child: Text(
                       savedCoupons[index],
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   );
                 },
-              ),
+              )
             ),
           ],
         )
