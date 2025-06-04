@@ -7,12 +7,14 @@ class TeamTile extends StatefulWidget {
   final Team team;
   final bool? isFavorite;
   final VoidCallback? onStarPressed;
+  final bool showStar;
 
   const TeamTile({
     super.key,
     required this.team,
     this.isFavorite,
     this.onStarPressed,
+    this.showStar = true
   });
 
   @override
@@ -124,13 +126,16 @@ class _TeamTileState extends State<TeamTile> {
             SizedBox(height: 1,)
           ],
         ),
-        trailing: IconButton(
+        trailing: widget.showStar
+            ? IconButton(
           icon: Icon(
             displayFavorite ? Icons.star : Icons.star_border,
-            color: displayFavorite ? Color(0xFFFFC107) : null,size: 30,
+            color: displayFavorite ? Color(0xFFFFC107) : null,
+            size: 30,
           ),
           onPressed: _toggleFavorite,
-        ),
+        )
+            : null,
       ),
     );
   }

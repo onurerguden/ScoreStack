@@ -189,18 +189,36 @@ class CouponsPageState extends State<CouponsPage> {
                                         vertical: 12,
                                       ),
                                     ),
-                                    onPressed: () {
-                                      final currentIndex =
-                                      controller.page!.round();
-                                      final coupon = coupons[currentIndex];
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
+                                    onPressed: () async {
+                                      final currentIndex = controller.page!.round();
+                                      final coupon = coupons[currentIndex]; // 🔸 coupon burada tanımlanıyor
+
+                                      final matchSummaries = coupon.selectedMatches.map((item) {
+                                        final match = item.match;
+                                        final prediction = item.selectedResult;
+
+                                        String predictionStr;
+                                        if (prediction == 1) predictionStr = "1";
+                                        else if (prediction == 0) predictionStr = "X";
+                                        else predictionStr = "2";
+
+                                        return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
+                                      }).join(" | ");
+
+                                      final couponText = "ODD: ${coupon.totalOdd.toStringAsFixed(2)} → $matchSummaries";
+
+                                      final prefs = await SharedPreferences.getInstance();
+                                      List<String> saved = prefs.getStringList('savedCoupons') ?? [];
+
+                                      if (!saved.contains(couponText)) {
+                                        saved.add(couponText);
+                                        await prefs.setStringList('savedCoupons', saved);
+                                      }
+
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                            "Saved: ${coupon.totalOdd.toStringAsFixed(2)}x | ${coupon.selectedMatches.length} Maç",
-                                          ),
-                                          duration: Duration(milliseconds: 800),
+                                          content: Text("Saved: $couponText"),
+                                          duration: Duration(milliseconds: 1000),
                                         ),
                                       );
                                     },

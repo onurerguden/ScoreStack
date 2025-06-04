@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -23,15 +24,43 @@ class SettingsPageState extends State<SettingsPage> {
         ),
         backgroundColor: Colors.green[800]
       ),
-      body: Center(
-          child: Text(
-            "To be continued...",
-            style: TextStyle(
-              fontSize: 19,
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-          ))
+      body: ListView(
+        children: [
+      ListTile(
+      leading: const Icon(Icons.star_outline, color: Colors.orange),
+      title: Text(
+        'Delete all favorite teams',
+        style: TextStyle(color: Colors.white),
+      ),
+      onTap: () async {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('favorites');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All favorite teams have been cleared.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+    ),
+          ListTile(
+            leading: Icon(Icons.delete_forever, color: Colors.red),
+            title: Text(
+              'Delete all saved coupons',
+              style: TextStyle(color: Colors.white),),
+            onTap: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('savedCoupons');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('All saved coupons are deleted.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+        ],
+      )
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Coupon.dart';
+import '../services/GlobalLog.dart';
 
 class Match {
   final DocumentReference? homeTeamRef;
@@ -50,8 +51,7 @@ Future<List<Coupon>> getCoupons() async {
   final coupons = await FirebaseFirestore.instance.collection("coupons").get();
 
   return coupons.docs.map((doc) {
-    final matches =
-    (doc["matches"] as List).map((matchMap) {
+    final matches = (doc["matches"] as List).map((matchMap) {
       return CouponItem(
         match: Match(
           homeTeamRef: null,
@@ -67,11 +67,7 @@ Future<List<Coupon>> getCoupons() async {
         selectedResult: 1,
       );
     }).toList();
+
     return Coupon.create(matches, title: doc['title'] ?? 'Coupon');
   }).toList();
 }
-
-
-
-
-

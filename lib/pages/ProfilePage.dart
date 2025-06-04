@@ -13,10 +13,12 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
   List<Team> favoriteTeams = [];
+  List<String> savedCoupons = [];
 
   void initState() {
     super.initState();
     fetchFavorites();
+    fetchSavedCoupons();
   }
 
   Future<void> fetchFavorites() async {
@@ -31,6 +33,13 @@ class ProfilePageState extends State<ProfilePage> {
 
     setState(() {
       favoriteTeams = allteams.where((team) => favoriteNames.contains(team.name)).toList();
+    });
+  }
+
+  Future<void> fetchSavedCoupons() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      savedCoupons = prefs.getStringList('savedCoupons') ?? [];
     });
   }
 
@@ -63,7 +72,8 @@ class ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 12),
-            Expanded(
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.4,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white12,
@@ -79,9 +89,50 @@ class ProfilePageState extends State<ProfilePage> {
                 ) : ListView.builder(
                   itemCount: favoriteTeams.length,
                   itemBuilder: (context, index) {
-                    return TeamTile(team: favoriteTeams[index]);
+                    return TeamTile(
+                      team: favoriteTeams[index],
+                      showStar: false,
+                    );
                   },
                 )
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              "Saved Coupons",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.25,
+              decoration: BoxDecoration(
+                color: Colors.white12,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.orange, width: 2),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: savedCoupons.isEmpty
+                  ? Center(
+                child: Text(
+                  "No saved coupons.",
+                  style: TextStyle(color: Colors.white70),
+                ),
+              )
+                  : ListView.builder(
+                itemCount: savedCoupons.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(
+                      savedCoupons[index],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                },
               ),
             ),
           ],
