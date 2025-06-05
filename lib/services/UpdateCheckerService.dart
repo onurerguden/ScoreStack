@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UpdateCheckerService {
   static const String _lastUpdateKey = 'lastUpdateTime';
   static const eightHours = 8 * 60 * 60 * 1000;
-  static const int _updateThresholdMillis =99999999999 * eightHours;
+  static const int _updateThresholdMillis =eightHours;
 
 
   // Zamanı kaydet

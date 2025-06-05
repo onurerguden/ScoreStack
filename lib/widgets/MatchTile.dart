@@ -28,9 +28,14 @@ class MatchTile extends StatelessWidget {
         return 'assets/logos/premierLeagueLogo.png';
       case 'La Liga':
         return 'assets/logos/laLigaLogo.png';
+      case 'MLS':
+        return 'assets/logos/Mls-logo.png';
+      case  'Brasileiro Serie A':
+        return 'assets/logos/campeonato.png';
       default:
-        return  'assets/images/ScoreStackLogo4-removebg-preview.png';// fallback
+        return  'assets/images/ScoreStackLogo4-removebg-preview.png';
     }
+
   }
 
   String _formatOdds(double odds) {

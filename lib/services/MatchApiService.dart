@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MatchApiService {
-  int fetchMatchsinXdays = 7;
+  int fetchMatchsinXdays = 3;
   static const String _apiKey =
       '2fb2b575b5msh4cbb2a0204661dep1b2879jsn33d0c3db9ba2';
   static const String _host = 'api-football-v1.p.rapidapi.com';
@@ -47,7 +47,7 @@ class MatchApiService {
 
 
   Future<List<String>> fetchLast5Matches(int teamId) async {
-    final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2024'); // DEĞİŞTİ
+    final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2025'); // DEĞİŞTİ
 
     final response = await _getWithRetry(
       url,
@@ -89,19 +89,21 @@ class MatchApiService {
 
   Future<void> fetchMatchesForLeagues() async {
     List<Map<String, dynamic>> leagues = [
-      //{'id': 214, 'name': 'Allsvenskan'},
-      {'id': 106, 'name': 'Eliteserien'},
-      {'id': 253, 'name': 'MLS'},
-      //{'id': 203, 'name': 'Süper Lig'},
-      //{'id': 39, 'name': 'Premier League'},
-      //{'id': 140, 'name': 'La Liga'},
-      {'id': 144, 'name': 'K League 1'},
+
+
+
+      {'id': 71, 'name': 'Brasileiro Serie A'},
+      {'id': 909, 'name': 'MLS'},
+      {'id': 203, 'name': 'Süper Lig'},
+      {'id': 39, 'name': 'Premier League'},
+      {'id': 140, 'name': 'La Liga'},
+
+
     ];
 
     await _deletePastMatches();
     for (var league in leagues) {
       await _fetchMatchesForLeague(league['id'], league['name']);
-      // Throttle between leagues to avoid rate limits
       await Future.delayed(Duration(seconds: 1));
     }
   }
@@ -116,7 +118,7 @@ class MatchApiService {
       final toDate = now.add(Duration(days: fetchMatchsinXdays));
 
       final url = Uri.parse(
-          '$_baseUrl/fixtures?league=$leagueId&season=2024&from=${_formatDate(now)}&to=${_formatDate(toDate)}'
+          '$_baseUrl/fixtures?league=$leagueId&season=2025&from=${_formatDate(now)}&to=${_formatDate(toDate)}'
       );
 
       final response = await _getWithRetry(

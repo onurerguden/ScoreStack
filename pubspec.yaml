@@ -68,6 +68,8 @@ flutter:
     - assets/images/ScoreStackLogo4-removebg-preview.png
     - assets/logos/premierLeagueLogo.png
     - assets/logos/laLigaLogo.png
+    - assets/logos/Mls-logo.png
+    - assets/logos/campeonato.png
 
     - assets/logos/superLeagueLogo.png
   # To add assets to your application, add an assets section, like this:
