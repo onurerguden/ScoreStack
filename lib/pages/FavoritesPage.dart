@@ -15,8 +15,8 @@ class FavoritesPage extends StatefulWidget {
 class FavoritesPageState extends State<FavoritesPage> {
   final ScrollController _scrollController = ScrollController();
 
-  List<Team> allTeams = []; // Tüm takımlar
-  List<Team> favoriteTeams = []; // Favori takımlar
+  List<Team> allTeams = [];
+  List<Team> favoriteTeams = [];
 
   Future<void> fetchTeams() async {
     final QuerySnapshot snapshot =

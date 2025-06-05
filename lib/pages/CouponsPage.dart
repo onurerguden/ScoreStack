@@ -5,7 +5,6 @@ import '../widgets/CouponStack.dart';
 import '../models/Coupon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class CouponsPage extends StatefulWidget {
   const CouponsPage({super.key});
 
@@ -20,16 +19,14 @@ class CouponsPageState extends State<CouponsPage> {
   String? currentCouponId;
   late Future<List<Coupon>> couponsFuture;
 
-  void addCost() async {
+  void addCost() {
     if (currentCouponId == null) return;
     setState(() {
       costMap[currentCouponId!] = (costMap[currentCouponId!] ?? 0) + 1;
     });
-    final p = await SharedPreferences.getInstance();
-    final encoded = costMap.map((key, value) => MapEntry(key, value.toString()));
-    await p.setStringList('costMap', encoded.entries.map((e) => '${e.key}:${e.value}').toList());
   }
 
+  @override
   void initState() {
     super.initState();
     controller = PageController(viewportFraction: 0.65, initialPage: 1);
@@ -52,6 +49,28 @@ class CouponsPageState extends State<CouponsPage> {
     return coupon.selectedMatches
         .map((m) => "${m.match.homeTeamName}_${m.match.awayTeamName}_${m.selectedResult}")
         .join("|");
+  }
+
+  void incrementCost() async {
+    if (currentCouponId == null) return;
+    setState(() {
+      costMap[currentCouponId!] = (costMap[currentCouponId!] ?? 0) + 1;
+    });
+    await saveCostMap();
+  }
+
+  void decrementCost() {
+    if (currentCouponId == null) return;
+    setState(() {
+      costMap[currentCouponId!] = (costMap[currentCouponId!] ?? 1) - 1;
+      if (costMap[currentCouponId!]! < 0) costMap[currentCouponId!] = 0;
+    });
+  }
+
+  Future<void> saveCostMap() async {
+    final p = await SharedPreferences.getInstance();
+    final encoded = costMap.map((key, value) => MapEntry(key, value.toString()));
+    await p.setStringList('costMap', encoded.entries.map((e) => '${e.key}:${e.value}').toList());
   }
 
   @override
@@ -138,6 +157,17 @@ class CouponsPageState extends State<CouponsPage> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  ElevatedButton(
+                                    onPressed: decrementCost,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: CircleBorder(),
+                                      backgroundColor: Colors.red,
+                                      padding: EdgeInsets.all(12),
+                                      elevation: 4,
+                                      side: BorderSide(color: Colors.red, width: 1.2),
+                                    ),
+                                    child: Icon(Icons.remove, color: Colors.white),
+                                  ),
                                   Text(
                                     "Total spent: \$${costMap[currentCouponId] ?? 0}",
                                     style: const TextStyle(
@@ -146,14 +176,18 @@ class CouponsPageState extends State<CouponsPage> {
                                       color: Colors.black,
                                     ),
                                   ),
-                                  const SizedBox(width: 16),
                                   ElevatedButton(
-                                    onPressed: addCost,
+                                    onPressed: incrementCost,
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[800]
+                                      shape: CircleBorder(),
+                                      backgroundColor: Colors.green,
+                                      padding: EdgeInsets.all(12),
+                                      elevation: 4,
+                                      side: BorderSide(color: Colors.green, width: 1.2),
                                     ),
-                                    child: const Text("Add Cost", style: TextStyle(color: Colors.white),)
-                                  )
+                                    child: Icon(Icons.add, color: Colors.white),
+                                  ),
+                                  const SizedBox(width: 16),
                                 ],
                               ),
                             ),
@@ -213,7 +247,8 @@ class CouponsPageState extends State<CouponsPage> {
                                     ),
                                     onPressed: () async {
                                       final currentIndex = controller.page!.round();
-                                      final coupon = coupons[currentIndex]; // 🔸 coupon burada tanımlanıyor
+                                      final coupon = coupons[currentIndex];
+                                      final key = generateCouponKey(coupon);
 
                                       final matchSummaries = coupon.selectedMatches.map((item) {
                                         final match = item.match;
@@ -222,7 +257,8 @@ class CouponsPageState extends State<CouponsPage> {
                                         String predictionStr;
                                         if (prediction == 1) {
                                           predictionStr = "1";
-                                        } else if (prediction == 0) predictionStr = "X";
+                                        }
+                                        else if (prediction == 0) predictionStr = "X";
                                         else predictionStr = "2";
 
                                         return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
@@ -237,6 +273,18 @@ class CouponsPageState extends State<CouponsPage> {
                                         saved.add(couponText);
                                         await prefs.setStringList('savedCoupons', saved);
                                       }
+
+                                      final currentCost = costMap[key] ?? 0;
+                                      if (currentCost > 0) {
+                                        List<String> expenses = prefs.getStringList('couponExpenses') ?? [];
+                                        expenses.add("$couponText\nCost: \$$currentCost");
+                                        await prefs.setStringList('couponExpenses', expenses);
+                                      }
+
+                                      costMap[key] = 0;
+                                      final encoded = costMap.map((k, v) => MapEntry(k, v.toString()));
+                                      await prefs.setStringList('costMap', encoded.entries.map((e) => '${e.key}:${e.value}').toList());
+                                      setState(() {});
 
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
