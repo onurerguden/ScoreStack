@@ -12,19 +12,22 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  int totalExpenses = 0;
   List<Team> favoriteTeams = [];
   List<String> savedCoupons = [];
 
+  @override
   void initState() {
     super.initState();
     fetchFavorites();
     fetchSavedCoupons();
+    loadTotalExpenses();
   }
 
   Future<void> fetchFavorites() async {
     final collection = await FirebaseFirestore.instance.collection('team').get();
     final allteams = collection.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
+      final data = doc.data();
       return Team.fromMap(data, reference: doc.reference);
     }).toList();
 
@@ -40,6 +43,23 @@ class ProfilePageState extends State<ProfilePage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       savedCoupons = prefs.getStringList('savedCoupons') ?? [];
+    });
+  }
+
+  Future<void> loadTotalExpenses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList('costMap') ?? [];
+
+    int total = 0;
+    for (var entry in list) {
+      final parts = entry.split(":");
+      if (parts.length == 2) {
+        total += int.tryParse(parts[1]) ?? 0;
+      }
+    }
+
+    setState(() {
+      totalExpenses = total;
     });
   }
 
@@ -151,6 +171,14 @@ class ProfilePageState extends State<ProfilePage> {
                   );
                 },
               )
+            ),
+            SizedBox(height: 20),
+            Text(
+              "         Total Expenditures: \$${totalExpenses.toString()}",
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.white,
+              ),
             ),
           ],
         )

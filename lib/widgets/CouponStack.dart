@@ -5,11 +5,13 @@ import '../models/Coupon.dart';
 class CouponStack extends StatefulWidget {
   final PageController controller;
   final List<Coupon> coupons;
+  final Function(int)? onPageChanged;
 
   const CouponStack({
     super.key,
     required this.controller,
     required this.coupons,
+    this.onPageChanged
   });
 
   @override
@@ -20,9 +22,6 @@ class _CouponStackState extends State<CouponStack> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-    });
   }
 
   @override
@@ -34,6 +33,7 @@ class _CouponStackState extends State<CouponStack> {
       child: PageView.builder(
         controller: widget.controller,
         itemCount: widget.coupons.length,
+        onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           return AnimatedBuilder(
             animation: widget.controller,

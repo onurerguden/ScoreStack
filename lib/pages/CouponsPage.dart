@@ -9,39 +9,53 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CouponsPage extends StatefulWidget {
   const CouponsPage({super.key});
 
+  @override
   State<CouponsPage> createState() => CouponsPageState();
 }
 
 class CouponsPageState extends State<CouponsPage> {
-
-  int cost = 0;
+  Map<String, int> costMap = {};
+  late PageController controller;
+  List<Coupon> coupons = [];
+  String? currentCouponId;
+  late Future<List<Coupon>> couponsFuture;
 
   void addCost() async {
+    if (currentCouponId == null) return;
     setState(() {
-      cost += 1;
+      costMap[currentCouponId!] = (costMap[currentCouponId!] ?? 0) + 1;
     });
     final p = await SharedPreferences.getInstance();
-    await p.setInt('cost', cost);
+    final encoded = costMap.map((key, value) => MapEntry(key, value.toString()));
+    await p.setStringList('costMap', encoded.entries.map((e) => '${e.key}:${e.value}').toList());
   }
 
   void initState() {
     super.initState();
-    loadCost();
+    controller = PageController(viewportFraction: 0.65, initialPage: 1);
+    loadCostMap();
+    couponsFuture = getCoupons();
   }
 
-  Future<void> loadCost() async {
+  Future<void> loadCostMap() async {
     final p = await SharedPreferences.getInstance();
+    final list = p.getStringList('costMap') ?? [];
     setState(() {
-      cost = p.getInt('cost') ?? 0;
+      costMap = {
+        for (var entry in list)
+          entry.split(":")[0]: int.tryParse(entry.split(":")[1]) ?? 0
+      };
     });
   }
 
-  Widget build(BuildContext context) {
-    final PageController controller = PageController(
-      viewportFraction: 0.65,
-      initialPage: 1,
-    );
+  String generateCouponKey(Coupon coupon) {
+    return coupon.selectedMatches
+        .map((m) => "${m.match.homeTeamName}_${m.match.awayTeamName}_${m.selectedResult}")
+        .join("|");
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final width = size.width * 0.95;
     final height = size.height * 0.74;
@@ -91,7 +105,7 @@ class CouponsPageState extends State<CouponsPage> {
                   ),
                   Expanded(
                     child: FutureBuilder<List<Coupon>>(
-                      future: getCoupons(),
+                      future: couponsFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -101,7 +115,10 @@ class CouponsPageState extends State<CouponsPage> {
                           return Center(child: Text("No coupons found."));
                         }
 
-                        final coupons = snapshot.data!;
+                        coupons = snapshot.data!;
+                        if (currentCouponId == null && coupons.isNotEmpty) {
+                          currentCouponId = generateCouponKey(coupons[controller.initialPage]);
+                        }
 
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -110,6 +127,11 @@ class CouponsPageState extends State<CouponsPage> {
                             CouponStack(
                               controller: controller,
                               coupons: coupons,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    currentCouponId = generateCouponKey(coupons[index]);
+                                  });
+                                }
                             ),
                             Padding(
                               padding: const EdgeInsets.only(bottom: 12),
@@ -117,7 +139,7 @@ class CouponsPageState extends State<CouponsPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    "Total spent: \$${cost.toString()}",
+                                    "Total spent: \$${costMap[currentCouponId] ?? 0}",
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -127,10 +149,10 @@ class CouponsPageState extends State<CouponsPage> {
                                   const SizedBox(width: 16),
                                   ElevatedButton(
                                     onPressed: addCost,
-                                    child: const Text("Add Cost", style: TextStyle(color: Colors.white),),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green[800]
-                                    )
+                                    ),
+                                    child: const Text("Add Cost", style: TextStyle(color: Colors.white),)
                                   )
                                 ],
                               ),
@@ -198,8 +220,9 @@ class CouponsPageState extends State<CouponsPage> {
                                         final prediction = item.selectedResult;
 
                                         String predictionStr;
-                                        if (prediction == 1) predictionStr = "1";
-                                        else if (prediction == 0) predictionStr = "X";
+                                        if (prediction == 1) {
+                                          predictionStr = "1";
+                                        } else if (prediction == 0) predictionStr = "X";
                                         else predictionStr = "2";
 
                                         return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";

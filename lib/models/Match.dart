@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Coupon.dart';
-import '../services/GlobalLog.dart';
 
 class Match {
   final DocumentReference? homeTeamRef;
