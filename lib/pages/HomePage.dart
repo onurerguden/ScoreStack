@@ -56,6 +56,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body:
           _isLoading
@@ -66,7 +67,7 @@ class HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CircularProgressIndicator(color: Colors.green[800]),
-                      SizedBox(height: 20),
+                      SizedBox(height: height * 0.024),
                       Text(
                         "New Matches are loading..",
                         style: TextStyle(
@@ -84,91 +85,95 @@ class HomePageState extends State<HomePage> {
                 children: [
                   Column(
                     children: [
-                      SizedBox(height: 14),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          width: size.width * 0.95,
-                          height: size.height * 0.46,
-                          color: CupertinoColors.systemGrey3,
-
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(12),
-                                color: Color(0xFF2C2C2C),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 27.8),
-                                    Icon(Icons.calendar_month_rounded, color: Colors.white, size: 28),
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Upcoming Matches",
-                                          style: TextStyle(
-                                            fontSize: size.width * 0.05,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w800,
+                      SizedBox(height: height * 0.017),
+                      Expanded(
+                        flex: 5,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Container(
+                            alignment: Alignment.topCenter,
+                            width: size.width * 0.95,
+                            color: CupertinoColors.systemGrey3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  color: Color(0xFF2C2C2C),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 27.8),
+                                      Icon(Icons.calendar_month_rounded, color: Colors.white, size: 28),
+                                      Expanded(
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Upcoming Matches",
+                                            style: TextStyle(
+                                              fontSize: size.width * 0.05,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: 44.8),
-                                  ],
+                                      SizedBox(width: 44.8),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(child: _matchService.buildMatchList()),
-                            ],
+                                Expanded(child: _matchService.buildMatchList()),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 14),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          width: size.width * 0.95,
-                          height: size.height * 0.265,
-                          color: Colors.lightGreen,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(12),
-                                color: Colors.green[800],
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 27.8,),
-                                    Icon(Icons.star, color: Color(0xFFFFC107),size: 28,),
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Favorite Team's Matches",
-                                          style: TextStyle(
-                                            fontSize: size.width * 0.05,
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.white,
+                      SizedBox(height: height * 0.017),
+                      Expanded(
+                        flex: 3,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Container(
+                            alignment: Alignment.topCenter,
+                            width: size.width * 0.95,
+                            color: Colors.lightGreen,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  color: Colors.green[800],
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 27.8),
+                                      Icon(Icons.star, color: Color(0xFFFFC107), size: 28),
+                                      Expanded(
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "Favorite Team's Matches",
+                                            style: TextStyle(
+                                              fontSize: size.width * 0.05,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: 22.4),
-                                  ],
+                                      SizedBox(width: 22.4),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: MatchService().buildFavoriteMatchList(),
-                              ),
-                            ],
+                                Expanded(
+                                  child: MatchService().buildFavoriteMatchList(),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
+                      SizedBox(height: height * 0.017),
                     ],
                   ),
                 ],

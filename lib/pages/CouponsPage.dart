@@ -87,8 +87,8 @@ class CouponsPageState extends State<CouponsPage> {
             borderRadius: BorderRadius.circular(15),
             child: Container(
               alignment: Alignment.topCenter,
-              width: width,
-              height: height,
+              width: size.width * 0.95,
+              height: size.height * 0.72,
               color: CupertinoColors.systemGrey3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

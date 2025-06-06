@@ -24,9 +24,8 @@ class CheckboxState extends State<InitialCheckboxPage> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 75,
-        title:
-        Row(
-          mainAxisAlignment:  MainAxisAlignment.center,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
             Image.asset(
@@ -34,7 +33,7 @@ class CheckboxState extends State<InitialCheckboxPage> {
               width: 40,
             ),
             SizedBox(width: 2),
-            const Text(
+            Text(
               "ScoreStack",
               style: TextStyle(
                 fontSize: 31,
@@ -62,12 +61,12 @@ class CheckboxState extends State<InitialCheckboxPage> {
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(12),
                         color: Color(0xFF2C2C2C),
                         child: Row(
                           children: [
-                            const SizedBox(width: 17.8),
-                            const Icon(
+                            SizedBox(width: 17.8),
+                            Icon(
                               Icons.warning_amber_rounded,
                               color: Colors.red,
                               size: 28,
@@ -79,7 +78,8 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                   "Warning About Betting & Harms",
                                   style: TextStyle(
                                     fontSize:
-                                        MediaQuery.of(context).size.width * 0.045,
+                                        MediaQuery.of(context).size.width *
+                                        0.045,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -87,33 +87,7 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                 ),
                               ),
                             ),
-                            SizedBox( width: 28,)
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.dangerous, color: Colors.white),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "Worldwide, up to 1 in 5 gambling addicts attempt suicide.",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 17
-                                ),
-                              ),
-                            ),
+                            SizedBox(width: 28),
                           ],
                         ),
                       ),
@@ -121,10 +95,39 @@ class CheckboxState extends State<InitialCheckboxPage> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Container(
+
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.dangerous, color: Colors.white),
+                                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                                Expanded(
+                                  child: Text(
+                                    "Worldwide, up to 1 in 5 gambling addicts attempt suicide.",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 17,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -134,8 +137,11 @@ class CheckboxState extends State<InitialCheckboxPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.report_gmailerrorred_rounded, color: Color(0xFFFFC107)),
-                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.report_gmailerrorred_rounded,
+                                  color: Color(0xFFFFC107),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                                 Expanded(
                                   child: Text(
                                     "Betting is riskful and leads to financial problems. It is not a financial problem solver and it is not reliable. Keep it at minimum, and try to quit as early as possible.",
@@ -150,7 +156,9 @@ class CheckboxState extends State<InitialCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -162,8 +170,8 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.link, color: Colors.blue,),
-                                    const SizedBox(width: 10),
+                                    Icon(Icons.link, color: Colors.blue),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                                     Expanded(
                                       child: Text(
                                         "Visit the following page to learn more about the harms of gambling:",
@@ -180,13 +188,21 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                 SizedBox(height: 10),
                                 GestureDetector(
                                   onTap: () async {
-                                    final Uri url = Uri.parse("https://www.begambleaware.org/");
-                                    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                    final Uri url = Uri.parse(
+                                      "https://www.begambleaware.org/",
+                                    );
+                                    if (!await launchUrl(
+                                      url,
+                                      mode: LaunchMode.externalApplication,
+                                    )) {
                                       throw 'Could not launch $url';
                                     }
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(6),
@@ -203,11 +219,17 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 4,)
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height *
+                                      0.002,
+                                ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -225,12 +247,13 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                     });
                                   },
                                 ),
-                                const SizedBox(width: 4),
+                                SizedBox(width: 4),
                                 Expanded(
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(width: 10),
+                                      SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                                       Expanded(
                                         child: Text(
                                           "I understand how betting can end up harming me, and I know my limits on playing bet.",
@@ -247,14 +270,16 @@ class CheckboxState extends State<InitialCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.027,
+                          ),
                           Center(
                             child: ElevatedButton(
                               onPressed: isChecked ? skip : null,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.lightGreen,
                               ),
-                              child: const Text(
+                              child: Text(
                                 "Continue",
                                 style: TextStyle(
                                   color: Colors.white,

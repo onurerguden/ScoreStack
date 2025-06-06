@@ -93,13 +93,13 @@ class FavoritesPageState extends State<FavoritesPage> {
             child: Container(
               alignment: Alignment.topCenter,
               width: size.width * 0.95,
-              height: size.height * 0.74,
+              height: size.height * 0.72,
               color: CupertinoColors.systemGrey3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(15),
                     color: const Color(0xFF2C2C2C),
                     child: Row(
                       children: [

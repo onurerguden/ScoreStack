@@ -32,7 +32,7 @@ class CheckboxState extends State<CouponCheckboxPage> {
               width: 40,
             ),
             SizedBox(width: 2),
-            const Text(
+            Text(
               "ScoreStack",
               style: TextStyle(
                 fontSize: 31,
@@ -61,12 +61,12 @@ class CheckboxState extends State<CouponCheckboxPage> {
                   Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(12),
                         color: Color(0xFF2C2C2C),
                         child: Row(
                           children: [
-                            const SizedBox(width: 17.8),
-                            const Icon(
+                            SizedBox(width: 17.8),
+                            Icon(
                               Icons.warning_amber_rounded,
                               color: Colors.red,
                               size: 28,
@@ -77,7 +77,9 @@ class CheckboxState extends State<CouponCheckboxPage> {
                                 child: Text(
                                   "Warning About Coupons",
                                   style: TextStyle(
-                                    fontSize: MediaQuery.of(context).size.width * 0.045,
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                        0.045,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800,
                                   ),
@@ -89,40 +91,41 @@ class CheckboxState extends State<CouponCheckboxPage> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 25),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(8)
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.dangerous, color: Colors.white),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "Worldwide, up to 1 in 5 gambling addicts attempt suicide.",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 17
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.dangerous, color: Colors.white),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Worldwide, up to 1 in 5 gambling addicts attempt suicide.",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.025,
+                          ),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -132,8 +135,11 @@ class CheckboxState extends State<CouponCheckboxPage> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.report_gmailerrorred_rounded, color: Color(0xFFFFC107)),
-                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.report_gmailerrorred_rounded,
+                                  color: Color(0xFFFFC107),
+                                ),
+                                SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     "ScoreStack doesn’t promise any win. This app isn’t responsible for outcomes. Bet wisely.",
@@ -148,7 +154,9 @@ class CheckboxState extends State<CouponCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.025,
+                          ),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -160,8 +168,8 @@ class CheckboxState extends State<CouponCheckboxPage> {
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.link, color: Colors.blue,),
-                                    const SizedBox(width: 10),
+                                    Icon(Icons.link, color: Colors.blue),
+                                    SizedBox(width: 10),
                                     Expanded(
                                       child: Text(
                                         "ScoreStack has no connection with betting companies. Coupons are based on statistics and are not advice to invest money.",
@@ -178,13 +186,21 @@ class CheckboxState extends State<CouponCheckboxPage> {
                                 SizedBox(height: 10),
                                 GestureDetector(
                                   onTap: () async {
-                                    final Uri url = Uri.parse("https://www.gamblingtherapy.org/");
-                                    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                    final Uri url = Uri.parse(
+                                      "https://www.gamblingtherapy.org/",
+                                    );
+                                    if (!await launchUrl(
+                                      url,
+                                      mode: LaunchMode.externalApplication,
+                                    )) {
                                       throw 'Could not launch $url';
                                     }
                                   },
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(6),
@@ -201,11 +217,13 @@ class CheckboxState extends State<CouponCheckboxPage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 4)
+                                SizedBox(height: 4),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.025,
+                          ),
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -223,12 +241,13 @@ class CheckboxState extends State<CouponCheckboxPage> {
                                     });
                                   },
                                 ),
-                                const SizedBox(width: 4),
+                                SizedBox(width: 4),
                                 Expanded(
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(width: 10),
+                                      SizedBox(width: 10),
                                       Expanded(
                                         child: Text(
                                           "I know betting has risks and ScoreStack isn’t responsible for what I choose to do.",
@@ -245,14 +264,16 @@ class CheckboxState extends State<CouponCheckboxPage> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 25),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.025,
+                          ),
                           Center(
                             child: ElevatedButton(
                               onPressed: isChecked ? skip : null,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.lightGreen,
                               ),
-                              child: const Text(
+                              child: Text(
                                 "Continue",
                                 style: TextStyle(
                                   color: Colors.white,

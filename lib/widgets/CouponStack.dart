@@ -42,6 +42,10 @@ class _CouponStackState extends State<CouponStack> {
               if (widget.controller.position.haveDimensions) {
                 value = (widget.controller.page! - index).abs();
                 value = (1 - (value * 0.2)).clamp(0.8, 1);
+              } else {
+                final initialPage = widget.controller.initialPage;
+                value = (initialPage - index).abs().toDouble();
+                value = (1 - (value * 0.2)).clamp(0.8, 1);
               }
               final coupon = widget.coupons[index];
               return Center(

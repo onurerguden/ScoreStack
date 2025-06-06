@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class MatchApiService {
-  int fetchMatchsinXdays = 3;
+  int fetchMatchsinXdays = 2;
   static const String _apiKey =
       '2fb2b575b5msh4cbb2a0204661dep1b2879jsn33d0c3db9ba2';
   static const String _host = 'api-football-v1.p.rapidapi.com';
