@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Coupon.dart';
+import '../services/MatchApiService.dart';
 
 class Match {
   final DocumentReference? homeTeamRef;
@@ -23,6 +26,7 @@ class Match {
     required this.awayOdds,
     required this.league,
   });
+
 
   String get matchTimeFormatted =>
       'Date:  ${matchTime.day}/${matchTime.month} Time: ${matchTime.hour}:${matchTime.minute}';
@@ -63,7 +67,8 @@ Future<List<Coupon>> getCoupons() async {
           awayOdds: matchMap['odd'],
           league: 'Unknown',
         ),
-        selectedResult: 1,
+
+        selectedResult: MatchApiService.getResult()
       );
     }).toList();
 

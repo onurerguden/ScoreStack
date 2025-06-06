@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,6 +45,13 @@ class MatchApiService {
     await batch.commit();
     print('Deleted ${oldMatches.docs.length} past matches in batch');
   }
+
+
+  static int getResult() {
+    final random = Random();
+    return random.nextInt(3);
+  }
+
 
 
 

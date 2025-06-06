@@ -329,14 +329,15 @@ class CouponsPageState extends State<CouponsPage> {
                                               .selectedMatches
                                               .map((item) {
                                                 final match = item.match;
-                                                final prediction =
-                                                    item.selectedResult;
-                                                String predictionStr =
-                                                    prediction == 1
-                                                        ? "1"
-                                                        : prediction == 0
-                                                        ? "X"
-                                                        : "2";
+                                                final prediction = item.selectedResult;
+                                                String predictionStr;
+                                                if (prediction == 1) {
+                                                  predictionStr = "01"; // Home win
+                                                } else if (prediction == 2) {
+                                                  predictionStr = "02"; // Away win
+                                                } else {
+                                                  predictionStr = "X"; // Draw
+                                                }
                                                 return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
                                               })
                                               .join(", ");

@@ -180,7 +180,7 @@ class ProfilePageState extends State<ProfilePage> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.amberAccent, width: 5),
                 ),
-                padding: EdgeInsets.all(screenWidth * 0.02),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                 child:
                     favoriteTeams.isEmpty
                         ? Center(
@@ -223,7 +223,7 @@ class ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.green, width: 5),
               ),
-              padding: EdgeInsets.all(screenWidth * 0.02),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
               child:
                   savedCoupons.isEmpty
                       ? Center(
