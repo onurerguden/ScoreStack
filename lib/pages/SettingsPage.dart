@@ -14,8 +14,9 @@ class SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: Color(0xFF2C2C2C),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          "Settings",
+          "Settings Page",
           style: TextStyle(
             fontSize: 23,
             color: Colors.white,
@@ -54,6 +55,25 @@ class SettingsPageState extends State<SettingsPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('All saved coupons are deleted.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.restart_alt, color: Colors.lightBlueAccent),
+            title: Text(
+              'Reset all coupon data',
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('savedCoupons');
+              await prefs.remove('totalExpenses');
+              await prefs.remove('couponIdCounter');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('All coupon data has been reset.'),
                   duration: Duration(seconds: 2),
                 ),
               );

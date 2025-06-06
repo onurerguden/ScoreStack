@@ -40,14 +40,17 @@ class CouponsPageState extends State<CouponsPage> {
     setState(() {
       costMap = {
         for (var entry in list)
-          entry.split(":")[0]: int.tryParse(entry.split(":")[1]) ?? 0
+          entry.split(":")[0]: int.tryParse(entry.split(":")[1]) ?? 0,
       };
     });
   }
 
   String generateCouponKey(Coupon coupon) {
     return coupon.selectedMatches
-        .map((m) => "${m.match.homeTeamName}_${m.match.awayTeamName}_${m.selectedResult}")
+        .map(
+          (m) =>
+              "${m.match.homeTeamName}_${m.match.awayTeamName}_${m.selectedResult}",
+        )
         .join("|");
   }
 
@@ -69,8 +72,13 @@ class CouponsPageState extends State<CouponsPage> {
 
   Future<void> saveCostMap() async {
     final p = await SharedPreferences.getInstance();
-    final encoded = costMap.map((key, value) => MapEntry(key, value.toString()));
-    await p.setStringList('costMap', encoded.entries.map((e) => '${e.key}:${e.value}').toList());
+    final encoded = costMap.map(
+      (key, value) => MapEntry(key, value.toString()),
+    );
+    await p.setStringList(
+      'costMap',
+      encoded.entries.map((e) => '${e.key}:${e.value}').toList(),
+    );
   }
 
   @override
@@ -128,7 +136,11 @@ class CouponsPageState extends State<CouponsPage> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator(color: Colors.green,),);
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.green,
+                            ),
+                          );
                         }
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Center(child: Text("No coupons found."));
@@ -136,7 +148,9 @@ class CouponsPageState extends State<CouponsPage> {
 
                         coupons = snapshot.data!;
                         if (currentCouponId == null && coupons.isNotEmpty) {
-                          currentCouponId = generateCouponKey(coupons[controller.initialPage]);
+                          currentCouponId = generateCouponKey(
+                            coupons[controller.initialPage],
+                          );
                         }
 
                         return Column(
@@ -146,56 +160,15 @@ class CouponsPageState extends State<CouponsPage> {
                             CouponStack(
                               controller: controller,
                               coupons: coupons,
-                                onPageChanged: (index) {
-                                  setState(() {
-                                    currentCouponId = generateCouponKey(coupons[index]);
-                                  });
-                                }
+                              onPageChanged: (index) {
+                                setState(() {
+                                  currentCouponId = generateCouponKey(
+                                    coupons[index],
+                                  );
+                                });
+                              },
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: decrementCost,
-                                    style: ElevatedButton.styleFrom(
-                                      shape: CircleBorder(),
-                                      backgroundColor: Colors.red,
-                                      padding: EdgeInsets.all(12),
-                                      elevation: 4,
-                                      side: BorderSide(color: Colors.red, width: 1.2),
-                                    ),
-                                    child: Icon(Icons.remove, color: Colors.white),
-                                  ),
-                                  Text(
-                                    "Total spent: \$${costMap[currentCouponId] ?? 0}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: incrementCost,
-                                    style: ElevatedButton.styleFrom(
-                                      shape: CircleBorder(),
-                                      backgroundColor: Colors.green,
-                                      padding: EdgeInsets.all(12),
-                                      elevation: 4,
-                                      side: BorderSide(color: Colors.green, width: 1.2),
-                                    ),
-                                    child: Icon(Icons.add, color: Colors.white),
-                                  ),
-                                  const SizedBox(width: 16),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              height: 2,
-                              margin: EdgeInsets.symmetric(horizontal: 25),
-                              color: Colors.black54,
-                            ),
+
                             Container(
                               padding: EdgeInsets.symmetric(
                                 vertical: 8,
@@ -212,116 +185,219 @@ class CouponsPageState extends State<CouponsPage> {
                                   width: 5,
                                 ),
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[800],
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(12),
-                                    ),
-                                    onPressed: () {
-                                      controller.previousPage(
-                                        duration: Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.keyboard_arrow_left_outlined,
-                                      color: Colors.white,
-                                      size: 25,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[800],
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 12,
-                                      ),
-                                    ),
-                                    onPressed: () async {
-                                      final currentIndex = controller.page!.round();
-                                      final coupon = coupons[currentIndex];
-                                      final key = generateCouponKey(coupon);
-
-                                      final matchSummaries = coupon.selectedMatches.map((item) {
-                                        final match = item.match;
-                                        final prediction = item.selectedResult;
-
-                                        String predictionStr;
-                                        if (prediction == 1) {
-                                          predictionStr = "1";
-                                        }
-                                        else if (prediction == 0) predictionStr = "X";
-                                        else predictionStr = "2";
-
-                                        return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
-                                      }).join("\n");
-
-                                      final couponText = "ODD: ${coupon.totalOdd.toStringAsFixed(2)}\n$matchSummaries";
-
-                                      final prefs = await SharedPreferences.getInstance();
-                                      List<String> saved = prefs.getStringList('savedCoupons') ?? [];
-
-                                      if (!saved.contains(couponText)) {
-                                        saved.add(couponText);
-                                        await prefs.setStringList('savedCoupons', saved);
-                                      }
-
-                                      final currentCost = costMap[key] ?? 0;
-                                      if (currentCost > 0) {
-                                        List<String> expenses = prefs.getStringList('couponExpenses') ?? [];
-                                        expenses.add("$couponText\nCost: \$$currentCost");
-                                        await prefs.setStringList('couponExpenses', expenses);
-                                      }
-
-                                      costMap[key] = 0;
-                                      final encoded = costMap.map((k, v) => MapEntry(k, v.toString()));
-                                      await prefs.setStringList('costMap', encoded.entries.map((e) => '${e.key}:${e.value}').toList());
-                                      setState(() {});
-
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text("Saved: $couponText"),
-                                          duration: Duration(milliseconds: 1000),
+                              child:
+                              Column(children: [
+                                Container(
+                                  child:Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: decrementCost,
+                                        style: ElevatedButton.styleFrom(
+                                          shape: CircleBorder(),
+                                          backgroundColor: Colors.red,
+                                          padding: EdgeInsets.all(12),
+                                          elevation: 4,
+                                          side: BorderSide(color: Colors.red, width: 1.2),
                                         ),
-                                      );
-                                    },
-                                    child: Text(
-                                      "Save Coupon!",
-                                      style: TextStyle(
+                                        child: Icon(Icons.remove, color: Colors.white),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: CupertinoColors.systemGrey6,
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(
+                                            color: Colors.green.shade900,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child:Column(children: [
+                                          Text("Coupon cost: ",style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),),
+                                          Text(
+                                            "\$${costMap[currentCouponId] ?? 0}",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green[900],
+                                            ),
+                                          ),
+                                        ],)
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: incrementCost,
+                                        style: ElevatedButton.styleFrom(
+                                          shape: CircleBorder(),
+                                          backgroundColor: Colors.green,
+                                          padding: EdgeInsets.all(12),
+                                          elevation: 4,
+                                          side: BorderSide(color: Colors.green, width: 1.2),
+                                        ),
+                                        child: Icon(Icons.add, color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 6,),
+                                Container(
+                                  height: 2,
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  color: Colors.black54,
+                                ),
+                                SizedBox(height: 6,),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green[800],
+                                        shape: CircleBorder(),
+                                        padding: EdgeInsets.all(12),
+                                      ),
+                                      onPressed: () {
+                                        controller.previousPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.keyboard_arrow_left_outlined,
                                         color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w800,
+                                        size: 25,
                                       ),
                                     ),
-                                  ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green[800],
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.all(12),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green[800],
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 12,
+                                        ),
+                                      ),
+                                      onPressed: () async {
+                                        final currentIndex =
+                                        controller.page!.round();
+                                        final coupon = coupons[currentIndex];
+                                        final key = generateCouponKey(coupon);
+
+                                        final matchSummaries = coupon
+                                            .selectedMatches
+                                            .map((item) {
+                                          final match = item.match;
+                                          final prediction =
+                                              item.selectedResult;
+                                          String predictionStr =
+                                          prediction == 1
+                                              ? "1"
+                                              : prediction == 0
+                                              ? "X"
+                                              : "2";
+                                          return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
+                                        })
+                                            .join(", ");
+
+                                        final prefs =
+                                        await SharedPreferences.getInstance();
+
+                                        // 1. Get and update coupon ID
+                                        int couponId =
+                                            prefs.getInt('couponIdCounter') ?? 0;
+                                        prefs.setInt(
+                                          'couponIdCounter',
+                                          couponId + 1,
+                                        );
+
+                                        // 2. Get current cost
+                                        final currentCost = costMap[key] ?? 0;
+                                        if (currentCost == 0) return;
+
+                                        // 3. Create formatted coupon string
+                                        final formattedCoupon =
+                                            "CouponID:$couponId|Cost:$currentCost|ODD:${coupon.totalOdd.toStringAsFixed(2)}|Matches:$matchSummaries";
+
+                                        // 4. Save coupon
+                                        List<String> saved =
+                                            prefs.getStringList('savedCoupons') ??
+                                                [];
+                                        saved.add(formattedCoupon);
+                                        await prefs.setStringList(
+                                          'savedCoupons',
+                                          saved,
+                                        );
+
+                                        // 5. Update total expenses
+                                        int totalExpenses =
+                                            prefs.getInt('totalExpenses') ?? 0;
+                                        totalExpenses += currentCost;
+                                        await prefs.setInt(
+                                          'totalExpenses',
+                                          totalExpenses,
+                                        );
+
+                                        // 6. Reset cost for this coupon
+                                        costMap[key] = 0;
+                                        final encoded = costMap.map(
+                                              (k, v) => MapEntry(k, v.toString()),
+                                        );
+                                        await prefs.setStringList(
+                                          'costMap',
+                                          encoded.entries
+                                              .map((e) => '${e.key}:${e.value}')
+                                              .toList(),
+                                        );
+
+                                        setState(() {});
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              "Saved: $formattedCoupon",
+                                            ),
+                                            duration: Duration(
+                                              milliseconds: 1000,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Save Coupon!",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
                                     ),
-                                    onPressed: () {
-                                      controller.nextPage(
-                                        duration: Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.keyboard_arrow_right_outlined,
-                                      color: Colors.white,
-                                      size: 25,
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green[800],
+                                        shape: CircleBorder(),
+                                        padding: EdgeInsets.all(12),
+                                      ),
+                                      onPressed: () {
+                                        controller.nextPage(
+                                          duration: Duration(milliseconds: 300),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.keyboard_arrow_right_outlined,
+                                        color: Colors.white,
+                                        size: 25,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
+                              ],)
                             ),
                           ],
                         );
