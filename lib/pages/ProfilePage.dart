@@ -14,8 +14,10 @@ class ProfilePage extends StatefulWidget {
 
 class ProfilePageState extends State<ProfilePage> {
   int totalExpenses = 0;
+  double totalProfitLoss = 0;
   List<Team> favoriteTeams = [];
   List<String> savedCoupons = [];
+  Map<String, int> couponResults = {};
 
   @override
   void initState() {
@@ -23,6 +25,8 @@ class ProfilePageState extends State<ProfilePage> {
     fetchFavorites();
     fetchSavedCoupons();
     loadTotalExpenses();
+    loadCouponResults();
+    loadTotalProfitLoss();
   }
 
   Future<void> fetchFavorites() async {
@@ -48,21 +52,91 @@ class ProfilePageState extends State<ProfilePage> {
     setState(() {
       savedCoupons = prefs.getStringList('savedCoupons') ?? [];
     });
+
+    await loadCouponResults();
   }
 
   Future<void> loadTotalExpenses() async {
     final prefs = await SharedPreferences.getInstance();
     final total = prefs.getInt('totalExpenses') ?? 0;
-
     setState(() {
       totalExpenses = total;
     });
+  }
+
+  Future<void> loadTotalProfitLoss() async {
+    final prefs = await SharedPreferences.getInstance();
+    final total = prefs.getDouble('totalProfitLoss') ?? 0.0;
+    setState(() {
+      totalProfitLoss = total;
+    });
+  }
+
+  Future<void> loadCouponResults() async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList('couponResults') ?? [];
+    Map<String, int> results = {};
+    for (var entry in list) {
+      final parts = entry.split(':');
+      if (parts.length == 2) {
+        results[parts[0]] = int.tryParse(parts[1]) ?? 0;
+      }
+    }
+    setState(() {
+      couponResults = results;
+    });
+  }
+
+  Future<void> saveCouponResults() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> list =
+        couponResults.entries.map((e) => "${e.key}:${e.value}").toList();
+    await prefs.setStringList('couponResults', list);
+  }
+
+  Future<void> updateCouponResultState(
+    String couponId,
+    int status,
+    double cost,
+    double odd,
+  ) async {
+    int? prevStatus = couponResults[couponId];
+    double prevEffect = 0;
+    if (prevStatus == 1)
+      prevEffect = cost * odd;
+    else if (prevStatus == 2)
+      prevEffect = -cost;
+
+    totalProfitLoss -= prevEffect;
+
+    double newEffect = 0;
+    if (status == 1)
+      newEffect = cost * odd;
+    else if (status == 2)
+      newEffect = -cost;
+
+    totalProfitLoss += newEffect;
+
+    setState(() {
+      couponResults[couponId] = status;
+      totalProfitLoss = totalProfitLoss;
+    });
+    await saveCouponResults();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('totalProfitLoss', totalProfitLoss);
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    Color profitColor =
+        totalProfitLoss > 0
+            ? Colors.green
+            : totalProfitLoss < 0
+            ? Colors.red
+            : Colors.amber;
 
     return Scaffold(
       backgroundColor: Color(0xFF2C2C2C),
@@ -112,7 +186,7 @@ class ProfilePageState extends State<ProfilePage> {
                         ? Center(
                           child: Text(
                             "No favorites yet.",
-                            style: TextStyle(color: Colors.white70),
+                            style: TextStyle(color: Colors.black),
                           ),
                         )
                         : ListView.builder(
@@ -161,8 +235,23 @@ class ProfilePageState extends State<ProfilePage> {
                       : ListView.builder(
                         itemCount: savedCoupons.length,
                         itemBuilder: (context, index) {
+                          final parts = savedCoupons[index].split('|');
+                          final id = parts[0].split(':')[1];
+                          final costStr = parts[1].split(':')[1];
+                          final oddStr = parts[2].split(':')[1];
+                          final matches =
+                              parts[3]
+                                  .split(':')[1]
+                                  .split(',')
+                                  .map((e) => e.trim())
+                                  .toList();
+                          final cost = double.tryParse(costStr) ?? 0.0;
+                          final odd = double.tryParse(oddStr) ?? 0.0;
+                          int state = couponResults[id] ?? 0;
                           return Container(
-                            margin: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
+                            margin: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.008,
+                            ),
                             padding: EdgeInsets.all(screenWidth * 0.03),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -181,59 +270,113 @@ class ProfilePageState extends State<ProfilePage> {
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: () {
-                                final parts = savedCoupons[index].split('|');
-                                final id = parts[0].split(':')[1];
-                                final cost = parts[1].split(':')[1];
-                                final odd = parts[2].split(':')[1];
-                                final matches =
-                                    parts[3]
-                                        .split(':')[1]
-                                        .split(',')
-                                        .map((e) => e.trim())
-                                        .toList();
-
-                                return [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Coupon #$id",
-                                        style: TextStyle(
-                                          fontSize: screenWidth * 0.04,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Coupon #$id",
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.04,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      Text(
-                                        "Cost: \$$cost",
-                                        style: TextStyle(
-                                          fontSize: screenWidth * 0.037,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                    ),
+                                    Text(
+                                      "Cost: \$$costStr",
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.037,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                      Text(
-                                        "ODD: $odd",
-                                        style: TextStyle(
-                                          fontSize: screenWidth * 0.037,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                    ),
+                                    Text(
+                                      "ODD: $oddStr",
+                                      style: TextStyle(
+                                        fontSize: screenWidth * 0.037,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                    ],
-                                  ),
-                                  Divider(
-                                    color: Colors.grey[400],
-                                    thickness: 1,
-                                    height: 12,
-                                  ),
-                                  ...matches.map(
-                                    (match) => Text(
-                                      match,
-                                      style: TextStyle(fontSize: screenWidth * 0.035),
+                                    ),
+                                  ],
+                                ),
+                                Divider(
+                                  color: Colors.grey[400],
+                                  thickness: 1,
+                                  height: 12,
+                                ),
+                                ...matches.map(
+                                  (match) => Text(
+                                    match,
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.035,
                                     ),
                                   ),
-                                ];
-                              }(),
+                                ),
+                                SizedBox(height: 8),
+                                Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            await updateCouponResultState(
+                                              id,
+                                              0,
+                                              cost,
+                                              odd,
+                                            );
+                                          },
+                                          child: Icon(Icons.help_outline, size: 22, weight: 900),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                state == 0
+                                                    ? Colors.amber
+                                                    : Colors.grey[300],
+                                            foregroundColor: state == 0 ? Colors.white : Colors.black,
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            await updateCouponResultState(
+                                              id,
+                                              1,
+                                              cost,
+                                              odd,
+                                            );
+                                          },
+                                          child: Icon(Icons.check, size: 22, weight: 900),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                state == 1
+                                                    ? Colors.green
+                                                    : Colors.grey[300],
+                                            foregroundColor: state == 1 ? Colors.white : Colors.black,
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            await updateCouponResultState(
+                                              id,
+                                              2,
+                                              cost,
+                                              odd,
+                                            );
+                                          },
+                                          child: Icon(Icons.close, size: 22, weight: 900),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                state == 2
+                                                    ? Colors.red
+                                                    : Colors.grey[300],
+                                            foregroundColor: state == 2 ? Colors.white : Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           );
                         },
@@ -273,7 +416,11 @@ class ProfilePageState extends State<ProfilePage> {
                     child: ListTile(
                       title: Text(
                         "Total Spent: \$${totalExpenses.toString()}",
-                        style: TextStyle(fontSize: screenWidth * 0.040, color: Colors.black, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.040,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -285,8 +432,12 @@ class ProfilePageState extends State<ProfilePage> {
                     ),
                     child: ListTile(
                       title: Text(
-                        "Profit/Loss: \$${totalExpenses.toString()}",
-                        style: TextStyle(fontSize: screenWidth * 0.040, color: Colors.black, fontWeight: FontWeight.bold),
+                        "Profit/Loss: \$${totalProfitLoss.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.040,
+                          color: profitColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

@@ -52,9 +52,28 @@ class SettingsPageState extends State<SettingsPage> {
             onTap: () async {
               final prefs = await SharedPreferences.getInstance();
               await prefs.remove('savedCoupons');
+              await prefs.remove('couponResultStates');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('All saved coupons are deleted.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.exposure_zero, color: Colors.yellow),
+            title: Text(
+              'Reset profit only',
+              style: TextStyle(color: Colors.white),
+            ),
+            onTap: () async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('totalProfitLoss');
+              await prefs.remove('couponResults');
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Profit information has been reset.'),
                   duration: Duration(seconds: 2),
                 ),
               );
@@ -71,6 +90,8 @@ class SettingsPageState extends State<SettingsPage> {
               await prefs.remove('savedCoupons');
               await prefs.remove('totalExpenses');
               await prefs.remove('couponIdCounter');
+              await prefs.remove('couponResultStates');
+              await prefs.remove('totalProfitLoss');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('All coupon data has been reset.'),
