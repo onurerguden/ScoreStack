@@ -1,11 +1,13 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class MatchApiService {
-  int fetchMatchsinXdays = 2;
+  int fetchMatchsinXdays = 1;
   static const String _apiKey =
       '2fb2b575b5msh4cbb2a0204661dep1b2879jsn33d0c3db9ba2';
   static const String _host = 'api-football-v1.p.rapidapi.com';

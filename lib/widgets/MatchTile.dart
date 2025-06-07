@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class MatchTile extends StatelessWidget {
   final String homeTeam;
   final String awayTeam;

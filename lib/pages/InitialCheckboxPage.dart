@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../app/MainMenu.dart';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class InitialCheckboxPage extends StatefulWidget {
   const InitialCheckboxPage({super.key});
 

@@ -1,5 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class FavoriteService {
   static const String _favoritesKey = 'favorites';
 

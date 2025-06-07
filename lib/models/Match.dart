@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Coupon.dart';
 import '../services/MatchApiService.dart';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class Match {
   final DocumentReference? homeTeamRef;
   final DocumentReference? awayTeamRef;

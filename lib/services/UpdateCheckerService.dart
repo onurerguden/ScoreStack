@@ -1,9 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class UpdateCheckerService {
   static const String _lastUpdateKey = 'lastUpdateTime';
   static const eightHours = 8 * 60 * 60 * 1000;
-  static const int _updateThresholdMillis = eightHours * 999999999;
+  static const int _updateThresholdMillis = eightHours;
 
   static Future<void> saveLastUpdateTime() async {
     final prefs = await SharedPreferences.getInstance();

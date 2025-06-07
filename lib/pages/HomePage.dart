@@ -6,6 +6,9 @@ import '../services/MatchApiService.dart';
 import '../services/UpdateCheckerService.dart';
 import '../models/Match.dart';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 

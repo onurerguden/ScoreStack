@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../pages/InitialCheckboxPage.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

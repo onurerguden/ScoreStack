@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Team.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class TeamService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

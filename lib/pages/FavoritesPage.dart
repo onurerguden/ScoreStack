@@ -5,6 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/TeamTile.dart';
 import '../models/Team.dart';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
 

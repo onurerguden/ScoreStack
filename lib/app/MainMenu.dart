@@ -6,6 +6,9 @@ import '../pages/HomePage.dart';
 import '../widgets/CustomAppBar.dart';
 import '../widgets/CustomBottomNavigationBar.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
 

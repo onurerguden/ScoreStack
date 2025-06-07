@@ -4,6 +4,9 @@ import '../widgets/MatchTile.dart';
 import '../services/FavoriteService.dart';
 import '../models/Match.dart';
 
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class MatchService {
   final CollectionReference matchesCollection = FirebaseFirestore.instance
       .collection('matches');

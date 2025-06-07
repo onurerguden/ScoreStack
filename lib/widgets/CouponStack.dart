@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/Coupon.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class CouponStack extends StatefulWidget {
   final PageController controller;
   final List<Coupon> coupons;

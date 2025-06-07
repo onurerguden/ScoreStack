@@ -1,12 +1,12 @@
-
-//SARP DEMİRTAS - 20220601016
-//ONUR ERGÜDEN - 20220601030
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/Team.dart';
 import '../widgets/TeamTile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

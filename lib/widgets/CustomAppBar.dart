@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../pages/SettingsPage.dart';
 import '../pages/ProfilePage.dart';
 
+//SARP DEMİRTAŞ - 20220601016
+//ONUR ERGÜDEN - 20220601030
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
