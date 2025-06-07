@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/Coupon.dart';
 
-
 class CouponStack extends StatefulWidget {
   final PageController controller;
   final List<Coupon> coupons;
@@ -11,7 +10,7 @@ class CouponStack extends StatefulWidget {
     super.key,
     required this.controller,
     required this.coupons,
-    this.onPageChanged
+    this.onPageChanged,
   });
 
   @override
@@ -121,7 +120,7 @@ class _CouponStackState extends State<CouponStack> {
                                       padding: const EdgeInsets.symmetric(),
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             '${match.homeTeamName} - ${match.awayTeamName}',
@@ -165,4 +164,3 @@ class _CouponStackState extends State<CouponStack> {
     );
   }
 }
-

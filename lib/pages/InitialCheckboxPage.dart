@@ -100,7 +100,6 @@ class CheckboxState extends State<InitialCheckboxPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.red,
@@ -110,7 +109,10 @@ class CheckboxState extends State<InitialCheckboxPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Icon(Icons.dangerous, color: Colors.white),
-                                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.025,
+                                ),
                                 Expanded(
                                   child: Text(
                                     "Worldwide, up to 1 in 5 gambling addicts attempt suicide.",
@@ -141,7 +143,10 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                   Icons.report_gmailerrorred_rounded,
                                   color: Color(0xFFFFC107),
                                 ),
-                                SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.025,
+                                ),
                                 Expanded(
                                   child: Text(
                                     "Betting is riskful and leads to financial problems. It is not a financial problem solver and it is not reliable. Keep it at minimum, and try to quit as early as possible.",
@@ -171,7 +176,11 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Icon(Icons.link, color: Colors.blue),
-                                    SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width *
+                                          0.025,
+                                    ),
                                     Expanded(
                                       child: Text(
                                         "Visit the following page to learn more about the harms of gambling:",
@@ -253,7 +262,11 @@ class CheckboxState extends State<InitialCheckboxPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      SizedBox(width: MediaQuery.of(context).size.width * 0.025),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                            0.025,
+                                      ),
                                       Expanded(
                                         child: Text(
                                           "I understand how betting can end up harming me, and I know my limits on playing bet.",

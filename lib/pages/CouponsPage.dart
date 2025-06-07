@@ -332,11 +332,11 @@ class CouponsPageState extends State<CouponsPage> {
                                                 final prediction = item.selectedResult;
                                                 String predictionStr;
                                                 if (prediction == 1) {
-                                                  predictionStr = "01"; // Home win
+                                                  predictionStr = "01"; 
                                                 } else if (prediction == 2) {
-                                                  predictionStr = "02"; // Away win
+                                                  predictionStr = "02"; 
                                                 } else {
-                                                  predictionStr = "X"; // Draw
+                                                  predictionStr = "X"; 
                                                 }
                                                 return "${match.homeTeamName} - ${match.awayTeamName} ($predictionStr)";
                                               })

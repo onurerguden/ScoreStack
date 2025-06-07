@@ -17,20 +17,26 @@ class MainMenuState extends State<MainMenu> {
   int _selectedPage = 1;
 
   final List<Widget> _pages = [FavoritesPage(), HomePage(), SizedBox()];
+
   void onClicked(int newPage) async {
     if (newPage == 2) {
       if (_selectedPage == 2) return;
-      final entered = await Navigator.push(context, PageRouteBuilder(opaque: false, pageBuilder: (_, __, ___) => CouponCheckboxPage()));
+      final entered = await Navigator.push(
+        context,
+        PageRouteBuilder(
+          opaque: false,
+          pageBuilder: (_, __, ___) => CouponCheckboxPage(),
+        ),
+      );
       if (entered == true) {
         setState(() {
           _selectedPage = 2;
           _pages[2] = CouponsPage();
         });
       }
-    }
-    else {
+    } else {
       setState(() {
-      _selectedPage = newPage;
+        _selectedPage = newPage;
       });
     }
   }
@@ -40,14 +46,9 @@ class MainMenuState extends State<MainMenu> {
     return Scaffold(
       body: _pages[_selectedPage],
 
-      //APPBAR CUSTOM
       appBar: CustomAppBar(),
 
-      //BOTTOM NAVIGATION BAR
-      bottomNavigationBar: CustomBottomNavigationBar(
-        onClicked: onClicked,
-      ),
-
+      bottomNavigationBar: CustomBottomNavigationBar(onClicked: onClicked),
     );
   }
 }

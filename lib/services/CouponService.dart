@@ -24,20 +24,25 @@ class CouponService {
   }
 
   Future<void> uploadCoupon(
-      String title,
-      List<Map<String, dynamic>> matches,
-      ) async {
+    String title,
+    List<Map<String, dynamic>> matches,
+  ) async {
     final averageOdd =
         matches.map((m) => m["odd"] as num).reduce((a, b) => a + b) /
-            matches.length;
+        matches.length;
 
     await fbconnector.collection("coupons").add({
       "title": title,
-      "matches": matches.map((m) => {
-        ...m,
-        "homeTeam": m['homeTeamRef'],
-        "awayTeam": m['awayTeamRef'],
-      }).toList(),
+      "matches":
+          matches
+              .map(
+                (m) => {
+                  ...m,
+                  "homeTeam": m['homeTeamRef'],
+                  "awayTeam": m['awayTeamRef'],
+                },
+              )
+              .toList(),
       "odds": averageOdd,
       "createdAt": FieldValue.serverTimestamp(),
     });

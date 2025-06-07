@@ -13,6 +13,9 @@ class ScoreStackApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: InitialCheckboxPage());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: InitialCheckboxPage(),
+    );
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Coupon.dart';
 import '../services/MatchApiService.dart';
@@ -27,7 +25,6 @@ class Match {
     required this.league,
   });
 
-
   String get matchTimeFormatted =>
       'Date:  ${matchTime.day}/${matchTime.month} Time: ${matchTime.hour}:${matchTime.minute}';
 
@@ -49,28 +46,28 @@ class Match {
   }
 }
 
-
 Future<List<Coupon>> getCoupons() async {
   final coupons = await FirebaseFirestore.instance.collection("coupons").get();
 
   return coupons.docs.map((doc) {
-    final matches = (doc["matches"] as List).map((matchMap) {
-      return CouponItem(
-        match: Match(
-          homeTeamRef: null,
-          awayTeamRef: null,
-          homeTeamName: matchMap["team1"],
-          awayTeamName: matchMap["team2"],
-          matchTime: DateTime.parse(matchMap['startTime']),
-          homeOdds: matchMap['odd'],
-          drawOdds: matchMap['odd'],
-          awayOdds: matchMap['odd'],
-          league: 'Unknown',
-        ),
+    final matches =
+        (doc["matches"] as List).map((matchMap) {
+          return CouponItem(
+            match: Match(
+              homeTeamRef: null,
+              awayTeamRef: null,
+              homeTeamName: matchMap["team1"],
+              awayTeamName: matchMap["team2"],
+              matchTime: DateTime.parse(matchMap['startTime']),
+              homeOdds: matchMap['odd'],
+              drawOdds: matchMap['odd'],
+              awayOdds: matchMap['odd'],
+              league: 'Unknown',
+            ),
 
-        selectedResult: MatchApiService.getResult()
-      );
-    }).toList();
+            selectedResult: MatchApiService.getResult(),
+          );
+        }).toList();
 
     return Coupon.create(matches, title: doc['title'] ?? 'Coupon');
   }).toList();

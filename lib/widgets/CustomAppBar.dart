@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../pages/SettingsPage.dart';
 import '../pages/ProfilePage.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
-  const CustomAppBar({super.key,});
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CustomAppBar({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: 75,
       leading: Center(
@@ -19,9 +19,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
           iconSize: 40,
         ),
       ),
-      title:
-      Row(
-        mainAxisAlignment:  MainAxisAlignment.center,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
           Image.asset(
@@ -37,28 +36,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
               color: Colors.white,
             ),
           ),
-          SizedBox(
-            width: 10,
-          )
+          SizedBox(width: 10),
         ],
       ),
 
       backgroundColor: Color(0xFF2C2C2C),
       actions: [
         IconButton(
-          onPressed: (){
+          onPressed: () {
             print("profile button clicked");
             Navigator.of(context).push(_slideFromRight(ProfilePage()));
           },
-          icon: Icon(Icons.account_circle,color: Colors.white,),
+          icon: Icon(Icons.account_circle, color: Colors.white),
           iconSize: 40,
         ),
-        SizedBox(
-          width: 5,
-        )
+        SizedBox(width: 5),
       ],
     );
   }
+
   @override
   Size get preferredSize => const Size.fromHeight(75);
 }
@@ -68,7 +64,7 @@ Route _slideFromRight(Widget page) {
     pageBuilder: (context, animation, secondaryAnimation) => page,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       final offset = Tween<Offset>(
-        begin: const Offset(1.0, 0.0), // sağdan
+        begin: const Offset(1.0, 0.0),
         end: Offset.zero,
       ).animate(animation);
       return SlideTransition(position: offset, child: child);
@@ -81,7 +77,7 @@ Route _slideFromLeft(Widget page) {
     pageBuilder: (context, animation, secondaryAnimation) => page,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       final offset = Tween<Offset>(
-        begin: const Offset(-1.0, 0.0), // soldan
+        begin: const Offset(-1.0, 0.0),
         end: Offset.zero,
       ).animate(animation);
       return SlideTransition(position: offset, child: child);

@@ -41,12 +41,18 @@ class HomePageState extends State<HomePage> {
       _isLoading = false;
       _matchesFuture = _matchService.fetchMatches();
       _matchesFuture.then((matches) async {
-        final mappedMatches = matches.map((m) => {
-          "team1": m.homeTeamName,
-          "team2": m.awayTeamName,
-          "odd": m.awayOdds,
-          "startTime": m.matchTime.toIso8601String(),
-        }.cast<String, dynamic>()).toList();
+        final mappedMatches =
+            matches
+                .map(
+                  (m) =>
+                      {
+                        "team1": m.homeTeamName,
+                        "team2": m.awayTeamName,
+                        "odd": m.awayOdds,
+                        "startTime": m.matchTime.toIso8601String(),
+                      }.cast<String, dynamic>(),
+                )
+                .toList();
 
         await CouponService().createCoupons(mappedMatches);
       });
@@ -103,7 +109,11 @@ class HomePageState extends State<HomePage> {
                                   child: Row(
                                     children: [
                                       SizedBox(width: 27.8),
-                                      Icon(Icons.calendar_month_rounded, color: Colors.white, size: 28),
+                                      Icon(
+                                        Icons.calendar_month_rounded,
+                                        color: Colors.white,
+                                        size: 28,
+                                      ),
                                       Expanded(
                                         child: Align(
                                           alignment: Alignment.center,
@@ -146,7 +156,11 @@ class HomePageState extends State<HomePage> {
                                   child: Row(
                                     children: [
                                       SizedBox(width: 27.8),
-                                      Icon(Icons.star, color: Color(0xFFFFC107), size: 28),
+                                      Icon(
+                                        Icons.star,
+                                        color: Color(0xFFFFC107),
+                                        size: 28,
+                                      ),
                                       Expanded(
                                         child: Align(
                                           alignment: Alignment.center,
@@ -166,7 +180,8 @@ class HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: MatchService().buildFavoriteMatchList(),
+                                  child:
+                                      MatchService().buildFavoriteMatchList(),
                                 ),
                               ],
                             ),

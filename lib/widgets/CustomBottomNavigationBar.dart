@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class CustomBottomNavigationBar extends StatelessWidget {
   Function(int) onClicked;
 
-  CustomBottomNavigationBar({
-  super.key,
-  required this.onClicked,
-  });
+  CustomBottomNavigationBar({super.key, required this.onClicked});
 
   @override
   Widget build(BuildContext context) {

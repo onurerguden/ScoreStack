@@ -17,7 +17,7 @@ class MatchTile extends StatelessWidget {
     required this.homeOdds,
     required this.drawOdds,
     required this.awayOdds,
-    required this.league
+    required this.league,
   });
 
   String getLeagueLogo(String league) {
@@ -30,12 +30,11 @@ class MatchTile extends StatelessWidget {
         return 'assets/logos/laLigaLogo.png';
       case 'MLS':
         return 'assets/logos/Mls-logo.png';
-      case  'Brasileiro Serie A':
+      case 'Brasileiro Serie A':
         return 'assets/logos/campeonato.png';
       default:
-        return  'assets/images/ScoreStackLogo4-removebg-preview.png';
+        return 'assets/images/ScoreStackLogo4-removebg-preview.png';
     }
-
   }
 
   String _formatOdds(double odds) {
@@ -62,12 +61,11 @@ class MatchTile extends StatelessWidget {
 
         title: Text(
           "$homeTeam vs $awayTeam",
-          style: TextStyle(fontWeight: FontWeight.w800,fontSize: 14.5),
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14.5),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             oddsNotAvailable
                 ? Text(
                   "Odds are not opened for this match yet!",

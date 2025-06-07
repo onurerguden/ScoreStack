@@ -18,9 +18,9 @@ class Team {
   });
 
   factory Team.fromMap(
-      Map<String, dynamic> map, {
-        DocumentReference? reference,
-      }) {
+    Map<String, dynamic> map, {
+    DocumentReference? reference,
+  }) {
     return Team(
       name: map['name'] ?? '',
       logoUrl: map['logoUrl'] ?? '',

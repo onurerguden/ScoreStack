@@ -22,10 +22,11 @@ class FavoritesPageState extends State<FavoritesPage> {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('team').get();
 
-    final teams = snapshot.docs.map((doc) {
-      final data = doc.data() as Map<String, dynamic>;
-      return Team.fromMap(data, reference: doc.reference);
-    }).toList();
+    final teams =
+        snapshot.docs.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return Team.fromMap(data, reference: doc.reference);
+        }).toList();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> favorites = prefs.getStringList('favorites') ?? [];
@@ -34,7 +35,7 @@ class FavoritesPageState extends State<FavoritesPage> {
       allTeams = teams;
 
       Map<String, int> favoriteOrder = {
-        for (int i = 0; i < favorites.length; i++) favorites[i]: i
+        for (int i = 0; i < favorites.length; i++) favorites[i]: i,
       };
 
       allTeams.sort((a, b) {
@@ -47,7 +48,7 @@ class FavoritesPageState extends State<FavoritesPage> {
         if (aFav && !bFav) return -1;
         if (!aFav && bFav) return 1;
 
-        return 0; // maintain original order for non-favorites
+        return 0;
       });
     });
     print("All teams fetched: ${allTeams.length}");

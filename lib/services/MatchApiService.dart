@@ -15,30 +15,31 @@ class MatchApiService {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
-
   Future<http.Response> _getWithRetry(Uri url, {int maxRetries = 3}) async {
     int attempt = 0;
     while (true) {
-      final response = await http.get(url,
-        headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey});
+      final response = await http.get(
+        url,
+        headers: {'X-RapidAPI-Host': _host, 'X-RapidAPI-Key': _apiKey},
+      );
       if (response.statusCode != 429 || attempt >= maxRetries) {
         return response;
       }
-      final delaySec = 1 << attempt; // 1s, 2s, 4s
-      print('429 received, retrying in ${delaySec}s (attempt ${attempt+1})');
+      final delaySec = 1 << attempt;
+      print('429 received, retrying in ${delaySec}s (attempt ${attempt + 1})');
       await Future.delayed(Duration(seconds: delaySec));
       attempt++;
     }
   }
 
-
   Future<void> _deletePastMatches() async {
     final now = DateTime.now();
     final batch = FirebaseFirestore.instance.batch();
-    final oldMatches = await FirebaseFirestore.instance
-        .collection('matches')
-        .where('matchTime', isLessThan: Timestamp.fromDate(now))
-        .get();
+    final oldMatches =
+        await FirebaseFirestore.instance
+            .collection('matches')
+            .where('matchTime', isLessThan: Timestamp.fromDate(now))
+            .get();
     for (var doc in oldMatches.docs) {
       batch.delete(doc.reference);
     }
@@ -46,28 +47,21 @@ class MatchApiService {
     print('Deleted ${oldMatches.docs.length} past matches in batch');
   }
 
-
   static int getResult() {
     final random = Random();
     return random.nextInt(3);
   }
 
-
-
-
   Future<List<String>> fetchLast5Matches(int teamId) async {
-    final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2025'); // DEĞİŞTİ
+    final url = Uri.parse('$_baseUrl/fixtures?team=$teamId&season=2025');
 
-    final response = await _getWithRetry(
-      url,
-    );
+    final response = await _getWithRetry(url);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       List<String> matches = [];
 
       for (var fixture in data['response']) {
-        // Yalnızca biten maçlar
         if (fixture['fixture']['status']['short'] != 'FT') continue;
 
         bool isHome = fixture['teams']['home']['id'] == teamId;
@@ -76,7 +70,8 @@ class MatchApiService {
 
         if (homeGoals == awayGoals) {
           matches.add('D');
-        } else if ((isHome && homeGoals > awayGoals) || (!isHome && awayGoals > homeGoals)) {
+        } else if ((isHome && homeGoals > awayGoals) ||
+            (!isHome && awayGoals > homeGoals)) {
           matches.add('W');
         } else {
           matches.add('L');
@@ -84,7 +79,6 @@ class MatchApiService {
         if (matches.length >= 5) break;
       }
 
-      // En son 5 maçı al
       if (matches.length > 5) {
         matches = matches.sublist(matches.length - 5);
       }
@@ -98,16 +92,11 @@ class MatchApiService {
 
   Future<void> fetchMatchesForLeagues() async {
     List<Map<String, dynamic>> leagues = [
-
-
-
       {'id': 71, 'name': 'Brasileiro Serie A'},
       {'id': 909, 'name': 'MLS'},
       {'id': 203, 'name': 'Süper Lig'},
       {'id': 39, 'name': 'Premier League'},
       {'id': 140, 'name': 'La Liga'},
-
-
     ];
 
     await _deletePastMatches();
@@ -116,7 +105,6 @@ class MatchApiService {
       await Future.delayed(Duration(seconds: 1));
     }
   }
-
 
   Future<void> _fetchMatchesForLeague(int leagueId, String leagueName) async {
     try {
@@ -127,19 +115,16 @@ class MatchApiService {
       final toDate = now.add(Duration(days: fetchMatchsinXdays));
 
       final url = Uri.parse(
-          '$_baseUrl/fixtures?league=$leagueId&season=2025&from=${_formatDate(now)}&to=${_formatDate(toDate)}'
+        '$_baseUrl/fixtures?league=$leagueId&season=2025&from=${_formatDate(now)}&to=${_formatDate(toDate)}',
       );
 
-      final response = await _getWithRetry(
-        url,
-      );
+      final response = await _getWithRetry(url);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print('Fetched matches for $leagueName: ${data['response'].length}');
 
         final batch = FirebaseFirestore.instance.batch();
-
 
         final List<DocumentReference> newMatchRefs = [];
 
@@ -160,9 +145,20 @@ class MatchApiService {
           int fixtureId = match['fixture']['id'];
           Map<String, double> odds = await fetchOdds(fixtureId);
 
-          DocumentReference homeTeamRef = await _getOrCreateTeam(homeName, homeLogo, country, leagueNameFromApi, homeTeamId);
-          DocumentReference awayTeamRef = await _getOrCreateTeam(awayName, awayLogo, country, leagueNameFromApi, awayTeamId);
-
+          DocumentReference homeTeamRef = await _getOrCreateTeam(
+            homeName,
+            homeLogo,
+            country,
+            leagueNameFromApi,
+            homeTeamId,
+          );
+          DocumentReference awayTeamRef = await _getOrCreateTeam(
+            awayName,
+            awayLogo,
+            country,
+            leagueNameFromApi,
+            awayTeamId,
+          );
 
           updatedTeamIds.add(homeTeamId);
           teamRefs[homeTeamId] = homeTeamRef;
@@ -186,8 +182,8 @@ class MatchApiService {
             continue;
           }
 
-
-          final matchDocRef = FirebaseFirestore.instance.collection('matches').doc();
+          final matchDocRef =
+              FirebaseFirestore.instance.collection('matches').doc();
           batch.set(matchDocRef, {
             'homeTeam': homeTeamRef,
             'awayTeam': awayTeamRef,
@@ -208,15 +204,18 @@ class MatchApiService {
 
         await batch.commit();
 
-
-
         final today = DateTime.now();
         for (final matchRef in newMatchRefs) {
           final snapshot = await matchRef.get();
           final data = snapshot.data() as Map<String, dynamic>;
           final matchTime = (data['matchTime'] as Timestamp).toDate();
-          if (matchTime.year == today.year && matchTime.month == today.month && matchTime.day == today.day) {
-            bool needsOdds = (data['homeOdds'] == 0.0 || data['drawOdds'] == 0.0 || data['awayOdds'] == 0.0);
+          if (matchTime.year == today.year &&
+              matchTime.month == today.month &&
+              matchTime.day == today.day) {
+            bool needsOdds =
+                (data['homeOdds'] == 0.0 ||
+                    data['drawOdds'] == 0.0 ||
+                    data['awayOdds'] == 0.0);
             if (needsOdds && data.containsKey('fixtureId')) {
               final newOdds = await fetchOdds(data['fixtureId']);
               await matchRef.update({
@@ -239,36 +238,41 @@ class MatchApiService {
           int homeGoals = match['goals']['home'];
           int awayGoals = match['goals']['away'];
 
-          String homeResult = homeGoals == awayGoals
-              ? 'D'
-              : homeGoals > awayGoals
+          String homeResult =
+              homeGoals == awayGoals
+                  ? 'D'
+                  : homeGoals > awayGoals
                   ? 'W'
                   : 'L';
-          String awayResult = homeGoals == awayGoals
-              ? 'D'
-              : awayGoals > homeGoals
+          String awayResult =
+              homeGoals == awayGoals
+                  ? 'D'
+                  : awayGoals > homeGoals
                   ? 'W'
                   : 'L';
 
           if (!teamResults.containsKey(homeId)) {
             final doc = await teamRefs[homeId]!.get();
-            final existing = (doc['last5Matches'] as List?)?.cast<String>() ?? [];
+            final existing =
+                (doc['last5Matches'] as List?)?.cast<String>() ?? [];
             teamResults[homeId] = existing;
           }
           if (!teamResults.containsKey(awayId)) {
             final doc = await teamRefs[awayId]!.get();
-            final existing = (doc['last5Matches'] as List?)?.cast<String>() ?? [];
+            final existing =
+                (doc['last5Matches'] as List?)?.cast<String>() ?? [];
             teamResults[awayId] = existing;
           }
 
-          if (teamResults[homeId]!.isEmpty || teamResults[homeId]!.first != homeResult) {
+          if (teamResults[homeId]!.isEmpty ||
+              teamResults[homeId]!.first != homeResult) {
             teamResults[homeId]!.insert(0, homeResult);
           }
-          if (teamResults[awayId]!.isEmpty || teamResults[awayId]!.first != awayResult) {
+          if (teamResults[awayId]!.isEmpty ||
+              teamResults[awayId]!.first != awayResult) {
             teamResults[awayId]!.insert(0, awayResult);
           }
 
-          // Limit to last 5
           if (teamResults[homeId]!.length > 5) {
             teamResults[homeId] = teamResults[homeId]!.sublist(0, 5);
           }
@@ -297,9 +301,7 @@ class MatchApiService {
   Future<Map<String, double>> fetchOdds(int fixtureId) async {
     final url = Uri.parse('$_baseUrl/odds?fixture=$fixtureId');
 
-    final response = await _getWithRetry(
-      url,
-    );
+    final response = await _getWithRetry(url);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -317,9 +319,16 @@ class MatchApiService {
     return {'home': 0.0, 'draw': 0.0, 'away': 0.0};
   }
 
-  Future<DocumentReference> _getOrCreateTeam(String teamName, String logoUrl, String country, String league, int teamId) async {
+  Future<DocumentReference> _getOrCreateTeam(
+    String teamName,
+    String logoUrl,
+    String country,
+    String league,
+    int teamId,
+  ) async {
     final teamCollection = FirebaseFirestore.instance.collection('team');
-    final querySnapshot = await teamCollection.where('name', isEqualTo: teamName).get();
+    final querySnapshot =
+        await teamCollection.where('name', isEqualTo: teamName).get();
 
     if (querySnapshot.docs.isNotEmpty) {
       return querySnapshot.docs.first.reference;
@@ -348,11 +357,12 @@ Future<void> updateZeroOddsMatches() async {
         matchData['drawOdds'] == 0.0 &&
         matchData['awayOdds'] == 0.0 &&
         matchData.containsKey('fixtureId')) {
-
       final fixtureId = matchData['fixtureId'];
 
       final newOdds = await MatchApiService().fetchOdds(fixtureId);
-      if (newOdds['home'] != 0.0 || newOdds['draw'] != 0.0 || newOdds['away'] != 0.0) {
+      if (newOdds['home'] != 0.0 ||
+          newOdds['draw'] != 0.0 ||
+          newOdds['away'] != 0.0) {
         await matchDoc.reference.update({
           'homeOdds': newOdds['home'],
           'drawOdds': newOdds['draw'],
@@ -362,7 +372,6 @@ Future<void> updateZeroOddsMatches() async {
       } else {
         print('Still no odds for match: $fixtureId');
       }
-
     }
   }
 }

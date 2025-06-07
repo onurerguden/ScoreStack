@@ -10,7 +10,6 @@ class MatchService {
 
   Future<List<Match>> fetchMatches() async {
     try {
-      //ORDER THE MATCHES ACCORDİNG TO THE CLOSEST MATCH TİME
       QuerySnapshot snapshot =
           await matchesCollection.orderBy("matchTime").get();
       print('Fetched documents: ${snapshot.docs.length}');

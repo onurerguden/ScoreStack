@@ -1,3 +1,6 @@
+
+//SARP DEMİRTAS - 20220601016
+//ONUR ERGÜDEN - 20220601030
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/Team.dart';
@@ -102,17 +105,17 @@ class ProfilePageState extends State<ProfilePage> {
   ) async {
     int? prevStatus = couponResults[couponId];
     double prevEffect = 0;
-    if (prevStatus == 1)
+    if (prevStatus == 1) {
       prevEffect = cost * odd;
-    else if (prevStatus == 2)
+    } else if (prevStatus == 2)
       prevEffect = -cost;
 
     totalProfitLoss -= prevEffect;
 
     double newEffect = 0;
-    if (status == 1)
+    if (status == 1) {
       newEffect = cost * odd;
-    else if (status == 2)
+    } else if (status == 2)
       newEffect = -cost;
 
     totalProfitLoss += newEffect;
@@ -327,13 +330,20 @@ class ProfilePageState extends State<ProfilePage> {
                                               odd,
                                             );
                                           },
-                                          child: Icon(Icons.help_outline, size: 22, weight: 900),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 state == 0
                                                     ? Colors.amber
                                                     : Colors.grey[300],
-                                            foregroundColor: state == 0 ? Colors.white : Colors.black,
+                                            foregroundColor:
+                                                state == 0
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                          child: Icon(
+                                            Icons.help_outline,
+                                            size: 22,
+                                            weight: 900,
                                           ),
                                         ),
                                         ElevatedButton(
@@ -345,13 +355,20 @@ class ProfilePageState extends State<ProfilePage> {
                                               odd,
                                             );
                                           },
-                                          child: Icon(Icons.check, size: 22, weight: 900),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 state == 1
                                                     ? Colors.green
                                                     : Colors.grey[300],
-                                            foregroundColor: state == 1 ? Colors.white : Colors.black,
+                                            foregroundColor:
+                                                state == 1
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                          child: Icon(
+                                            Icons.check,
+                                            size: 22,
+                                            weight: 900,
                                           ),
                                         ),
                                         ElevatedButton(
@@ -363,13 +380,20 @@ class ProfilePageState extends State<ProfilePage> {
                                               odd,
                                             );
                                           },
-                                          child: Icon(Icons.close, size: 22, weight: 900),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 state == 2
                                                     ? Colors.red
                                                     : Colors.grey[300],
-                                            foregroundColor: state == 2 ? Colors.white : Colors.black,
+                                            foregroundColor:
+                                                state == 2
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                          child: Icon(
+                                            Icons.close,
+                                            size: 22,
+                                            weight: 900,
                                           ),
                                         ),
                                       ],
